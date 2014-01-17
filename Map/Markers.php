@@ -82,7 +82,7 @@ class Markers extends \Nette\Object
 	{
 		end($this->markers);         // move the internal pointer to the end of the array
 		$key = key($this->markers);
-		$this->markers[$key]['icon'] = is_null($this->iconDefaultPath) ?: $this->iconDefaultPath .'/'. $icon;
+		$this->markers[$key]['icon'] = is_null($this->iconDefaultPath) ? $icon : $this->iconDefaultPath . $icon;
 	}
 	
 	
@@ -100,7 +100,7 @@ class Markers extends \Nette\Object
 	
 	/**
 	 * 
-	 * @param String $color
+	 * @param String $color Color can be 24-bit color or: black, brown, green, purple, yellow, blue, gray, orange, red, white
 	 * @return \Oli\GoogleAPI\Markers
 	 */
 	public function color($color)
