@@ -29,7 +29,7 @@ class MapAPI extends Control
 	/** @var String  */
 	private $key;
 	/** @var Array */
-	private $markers;
+	private $markers = array();
 	/** @var Boolean */
 	private $bound = false;
 	
