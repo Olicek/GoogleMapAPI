@@ -1,5 +1,5 @@
 {
-	"name": "Olicek/GoogleMapAPI",
+	"name": "olicek/google-map-api",
 	"type": "library",
 	"description": "Tool for paste google map to the page with markers",
 	"keywords": ["google","maps", "nette"],
