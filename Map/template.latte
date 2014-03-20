@@ -36,13 +36,14 @@
 		marker =  new google.maps.Marker;
 		loadMarkers();
 
-
+		{if $bound}
 		// Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
 		var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) 
 		{
 			this.setZoom({$zoom});
 			google.maps.event.removeListener(boundsListener);
 		});
+		{/if}
 	}
 	
 	function clearOverlays() {
