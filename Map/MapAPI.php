@@ -15,15 +15,15 @@ class MapAPI extends Control
 	const ROADMAP = 'ROADMAP', SATELLITE = 'SATELLITE', HYBRID = 'HYBRID', TERRAIN = 'TERRAIN';
 	
 	/** @var String */
-	private $width = '100%';
+	private $width;
 	/** @var String */
-	private $height = '100%';
+	private $height;
 	/** @var Array */
-	private $position;
+	private $coordinates;
 	/** @var Integer */
 	private $zoom;
 	/** @var MapAPI */
-	private $type = MapAPI::ROADMAP;
+	private $type;
 	/** @var Boolean */
 	private $staticMap = false;
 	/** @var String  */
@@ -31,34 +31,37 @@ class MapAPI extends Control
 	/** @var Array */
 	private $markers = array();
 	/** @var Boolean */
-	private $bound = false;
+	private $bound;
+	private $markerClusterer;
+	
+	
+	public function setup($config)
+	{
+		$this->width = $config['width'];
+		$this->height = $config['height'];
+	}
 	
 	
 	/**
 	 * 
-	 * @param array $position (latitude, longitude) - center of the map
+	 * @param array $coordinates (latitude, longitude) - center of the map
 	 */
-	public function __construct(array $position, $zoom = 8, $key = null)
+	public function setCoordinates(array $coordinates)
 	{
-		$this->key = $key;
-		
-		if (!is_array($position))
+		if (!is_array($coordinates))
 		{
-			throw new \InvalidArgumentException("type must be array, $position (".gettype($position).") was given");
+			throw new \InvalidArgumentException("type must be array, $coordinates (".gettype($coordinates).") was given");
 		}
 		
-		$this->position = $position;
-		
-		if (!is_int($zoom))
+		if(!count($coordinates))
 		{
-			throw new \InvalidArgumentException("type must be integer, $zoom (".gettype($zoom).") was given");
+			$this->coordinates = array(null, null);
+		} else
+		{
+			$this->coordinates = array_values($coordinates);
 		}
 		
-		if ($zoom < 0 || $zoom > 19)
-		{
-			throw new \LogicException('Zoom must be betwen <0, 19>.');
-		}
-		$this->zoom = (int) $zoom;
+		return $this;
 	}
 	
 	
@@ -75,6 +78,53 @@ class MapAPI extends Control
 	}
 	
 	
+	public function setKey($key)
+	{
+		$this->key = $key;
+		return $this;
+	}
+	
+	
+	public function setZoom($zoom)
+	{
+		if (!is_int($zoom))
+		{
+			throw new \InvalidArgumentException("type must be integer, $zoom (".gettype($zoom).") was given");
+		}
+		
+		if ($zoom < 0 || $zoom > 19)
+		{
+			throw new \LogicException('Zoom must be betwen <0, 19>.');
+		}
+		
+		$this->zoom = (int) $zoom;
+		return $this;
+	}
+	
+	
+	public function setType($type)
+	{
+		if($type !== self::HYBRID || $type !== self::ROADMAP || $type !== self::SATELLITE || $type !== self::TERRAIN)
+		{
+			
+		}
+		$this->type = $type;
+		return $this;
+	}
+	
+	
+	public function isMarkerClusterer($cluster)
+	{
+		if (!is_bool($cluster))
+		{
+			throw new \InvalidArgumentException("staticMap must be boolean, $cluster (".gettype($cluster).") was given");
+		}
+		
+		$this->markerClusterer = $cluster;
+		return $this;
+	}
+	
+	
 	/**
 	 * @return array Width and Height of the map.
 	 */
@@ -87,9 +137,9 @@ class MapAPI extends Control
 	/**
 	 * @return array Center of the map
 	 */
-	public function getPosition()
+	public function getCoordinates()
 	{
-		return $this->position;
+		return $this->coordinates;
 	}
 	
 	
@@ -163,11 +213,12 @@ class MapAPI extends Control
 	{
 		$this->template->height = $this->height;
 		$this->template->width = $this->width;
-		$this->template->position = $this->position;
+		$this->template->position = $this->coordinates;
 		$this->template->zoom = $this->zoom;
 		$this->template->type = $this->type;
 		$this->template->key = $this->key;
 		$this->template->bound = $this->bound;
+		$this->template->cluster = $this->markerClusterer;
 		if ($this->staticMap)
 		{
 			$this->template->markers = $this->markers;

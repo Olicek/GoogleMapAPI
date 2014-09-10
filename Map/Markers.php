@@ -18,6 +18,47 @@ class Markers extends \Nette\Object
 	private $iconDefaultPath;
 	
 	
+	public function addMarkers(array $markers)
+	{
+		if(count($markers))
+		{
+			foreach($markers as $marker)
+			{
+				if(!array_key_exists('coordinates', $marker))
+				{
+					throw new \Nette\InvalidArgumentException('Coordinates must be set in every marker');
+				}
+				
+				$this->addMarker(array_values($marker['coordinates']), 
+					isset($marker['animation']) ? $marker['animation'] : false, 
+					isset($marker['title']) ? $marker['title'] : null);
+				
+				if(array_key_exists('message', $marker))
+				{
+					if(is_array($marker['message']))
+					{
+						$message = array_values($marker['message']);
+						$this->setMessage($message[0], $message[1]);
+					} else
+					{
+						$this->setMessage($marker['message']);
+					}
+				}
+				
+				if(array_key_exists('icon', $marker))
+				{
+					$this->setIcon($marker['icon']);
+				}
+				
+				if(array_key_exists('color', $marker))
+				{
+					$this->setColor($marker['color']);
+				}
+			}
+		}
+	}
+	
+	
 	/**
 	* @param array $position
 	* @param boolean $animation
@@ -93,6 +134,12 @@ class Markers extends \Nette\Object
 	 */
 	public function setDefaultIconPath($defaultPath)
 	{
+		if(!is_null($defaultPath) && 
+			!\Nette\Utils\Strings::endsWith($defaultPath, '/') && 
+			!\Nette\Utils\Strings::endsWith($defaultPath, '\\'))
+		{
+			$defaultPath .= DIRECTORY_SEPARATOR;
+		}
 		$this->iconDefaultPath = $defaultPath;
 		return $this;
 	}
@@ -103,7 +150,7 @@ class Markers extends \Nette\Object
 	 * @param String $color Color can be 24-bit color or: black, brown, green, purple, yellow, blue, gray, orange, red, white
 	 * @return \Oli\GoogleAPI\Markers
 	 */
-	public function color($color)
+	public function setColor($color)
 	{
 		$allowed = array('black', 'brown', 'green', 'purple', 'yellow', 'blue', 'gray', 'orange', 'red', 'white');
 		if (!in_array($color, $allowed))

@@ -6,13 +6,12 @@
 {block head}
 <style type="text/css">
 #map_canvas { 
-	width:{$width};
-	height:{$height};
+	width:{$width|noescape};
+	height:{$height|noescape};
 }
 </style>
 
-
-
+<script type="text/javascript" src="{$basePath}/js/markerclusterer.js"></script>
 <script type="text/javascript">
 	
 	var map;
@@ -20,6 +19,7 @@
 	var markers = [];
 	var bounds;
 	var markersArray = [];
+	{if $cluster}var markersCluster = new Array();{/if}
 	
 	function initialize() {
 		var centerMap = new google.maps.LatLng({$position[0]}, {$position[1]});
@@ -35,15 +35,6 @@
 		map.setTilt(45);
 		marker =  new google.maps.Marker;
 		loadMarkers();
-
-		{if $bound}
-		// Override our map zoom level once our fitBounds function runs (Make sure it only runs once)
-		var boundsListener = google.maps.event.addListener((map), 'bounds_changed', function(event) 
-		{
-			this.setZoom({$zoom});
-			google.maps.event.removeListener(boundsListener);
-		});
-		{/if}
 	}
 	
 	function clearOverlays() {
@@ -71,10 +62,10 @@
 				markers[key] = val;
 			});
 
-			var infoWindow = new google.maps.InfoWindow(), marker, i;
 			// Loop through our array of markers & place each one on the map  
 			for( i = 0; i < markers.length; i++ ) 
 			{
+				var infoWindow = new google.maps.InfoWindow(), marker, i;
 
 				var position = new google.maps.LatLng(markers[i]['position'][0], markers[i]['position'][1]);
 				{if $bound}
@@ -86,6 +77,10 @@
 					map: map,
 					title: ((("title" in markers[i])) ? markers[i]['title'] : null)
 				});
+				
+				{if $cluster}
+				markersCluster.push(marker);
+				{/if}
 				
 				if ("animation" in markers[i])
 				{
@@ -111,7 +106,7 @@
 				{
 					marker.setIcon('{!$basePath}/'+markers[i]['icon']);
 				}
-
+				
 				markersArray.push(marker); 
 				
 				// Allow each marker to have an info window    
@@ -122,12 +117,24 @@
 							infoWindow.setContent('<div>'+markers[i]['message']+'</div>');
 							infoWindow.open(map, marker);
 					}})(marker, i));
+				
+					if ("autoOpen" in markers[i] && markers[i]['autoOpen'])
+					{
+						infoWindow.setContent('<div>'+markers[i]['message']+'</div>');
+						infoWindow.open(map,marker);
+					}
 				}
+				
+				
 			}
 			
 			{if $bound}
 			// Automatically center the map fitting all markers on the screen
 			map.fitBounds(bounds);
+			{/if}
+			
+			{if $cluster}
+				new MarkerClusterer(map, markersCluster);
 			{/if}
 		});
 	}
@@ -135,7 +142,7 @@
 	function loadScript() {
 		var script = document.createElement('script');
 		script.type = 'text/javascript';
-		script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&' +
+		script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&' +
 		'callback=initialize{if $key != null}&key={!$key}{/if}';
 		document.body.appendChild(script);
 	}
