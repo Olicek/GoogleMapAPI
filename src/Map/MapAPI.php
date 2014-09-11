@@ -1,4 +1,10 @@
 <?php
+/**
+ * Copyright (c) 2014 Petr Olišar (http://olisar.eu)
+ *
+ * For the full copyright and license information, please view
+ * the file LICENSE.md that was distributed with this source code.
+ */
 
 namespace Oli\GoogleAPI;
 use Nette\Application\UI\Control;
@@ -8,7 +14,6 @@ use Nette\Application\Responses\JsonResponse;
  * Description of GoogleAPI
  *
  * @author Petr Olišar <petr.olisar@gmail.com>
- * @author Karel Koliš <karel@kolis.eu>
  */
 class MapAPI extends Control
 {
@@ -22,7 +27,7 @@ class MapAPI extends Control
 	private $coordinates;
 	/** @var Integer */
 	private $zoom;
-	/** @var MapAPI */
+	/** @var String */
 	private $type;
 	/** @var Boolean */
 	private $staticMap = false;
@@ -30,21 +35,28 @@ class MapAPI extends Control
 	private $key;
 	/** @var Array */
 	private $markers = array();
+	/** @var boolean */
 	private $bound;
+	/** @var boolean */
 	private $markerClusterer;
 	
 	
-	
-	public function setup($config)
+	/**
+	 * @internal
+	 * @param array $config
+	 */
+	public function setup(array $config)
 	{
 		$this->width = $config['width'];
 		$this->height = $config['height'];
 	}
-	
+
 	
 	/**
 	 * 
 	 * @param array $coordinates (latitude, longitude) - center of the map
+	 * @return \Oli\GoogleAPI\MapAPI
+	 * @throws \InvalidArgumentException
 	 */
 	public function setCoordinates(array $coordinates)
 	{
@@ -78,6 +90,11 @@ class MapAPI extends Control
 	}
 	
 	
+	/**
+	 * 
+	 * @param string $key
+	 * @return \Oli\GoogleAPI\MapAPI
+	 */
 	public function setKey($key)
 	{
 		$this->key = $key;
@@ -85,6 +102,13 @@ class MapAPI extends Control
 	}
 	
 	
+	/**
+	 * 
+	 * @param int $zoom <0, 19>
+	 * @return \Oli\GoogleAPI\MapAPI
+	 * @throws \InvalidArgumentException
+	 * @throws \LogicException
+	 */
 	public function setZoom($zoom)
 	{
 		if (!is_int($zoom))
@@ -102,6 +126,11 @@ class MapAPI extends Control
 	}
 	
 	
+	/**
+	 * 
+	 * @param String $type
+	 * @return \Oli\GoogleAPI\MapAPI
+	 */
 	public function setType($type)
 	{
 		if($type !== self::HYBRID || $type !== self::ROADMAP || $type !== self::SATELLITE || $type !== self::TERRAIN)
@@ -132,7 +161,7 @@ class MapAPI extends Control
 	
 	
 	/**
-	 * @return Integet Zoom
+	 * @return integer Zoom
 	 */
 	public function getZoom()
 	{
@@ -141,7 +170,7 @@ class MapAPI extends Control
 	
 	
 	/**
-	 * @return MapAPI Which map type will be show
+	 * @return String Which map type will be show
 	 */
 	public function getType()
 	{
@@ -150,8 +179,10 @@ class MapAPI extends Control
 	
 	
 	/**
+	 * 
 	 * @param Boolean $staticMap
 	 * @return \Oli\GoogleAPI\MapAPI
+	 * @throws \InvalidArgumentException
 	 */
 	public function isStaticMap($staticMap = true)
 	{
@@ -166,13 +197,16 @@ class MapAPI extends Control
 	
 	
 	/**
+	 * 
 	 * @param \Oli\GoogleAPI\Markers $markers
+	 * @return \Oli\GoogleAPI\MapAPI
 	 */
 	public function addMarkers(Markers $markers)
 	{
 		$this->markers = $markers->getMarkers();
 		$this->bound = $markers->getBound();
 		$this->markerClusterer = $markers->getMarkerClusterer();
+		return $this;
 	}
 	
 	
@@ -212,6 +246,7 @@ class MapAPI extends Control
 	
 	/**
 	 * Send markers to template as JSON
+	 * @internal
 	 */
 	public function handleMarkers()
 	{

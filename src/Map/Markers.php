@@ -1,4 +1,10 @@
 <?php
+/**
+ * Copyright (c) 2014 Petr Olišar (http://olisar.eu)
+ *
+ * For the full copyright and license information, please view
+ * the file LICENSE.md that was distributed with this source code.
+ */
 
 namespace Oli\GoogleAPI;
 
@@ -6,7 +12,6 @@ namespace Oli\GoogleAPI;
  * Description of Markers
  *
  * @author Petr Olišar <petr.olisar@gmail.com>
- * @author Karel Koliš <karel@kolis.eu>
  */
 class Markers extends \Nette\Object
 {
@@ -18,9 +23,15 @@ class Markers extends \Nette\Object
 	private $iconDefaultPath;
 	/** @var Boolean */
 	private $bound;
+	/** @var Boolean */
 	private $markerClusterer;
 	
 	
+	/**
+	 * @internal
+	 * @param array $markers
+	 * @throws \Nette\InvalidArgumentException
+	 */
 	public function addMarkers(array $markers)
 	{
 		if(count($markers))
@@ -118,7 +129,13 @@ class Markers extends \Nette\Object
 	}
 	
 	
-	public function isMarkerClusterer($cluster)
+	/**
+	 * 
+	 * @param Boolean $cluster
+	 * @return \Oli\GoogleAPI\Markers
+	 * @throws \InvalidArgumentException
+	 */
+	public function isMarkerClusterer($cluster = true)
 	{
 		if (!is_bool($cluster))
 		{
@@ -130,10 +147,15 @@ class Markers extends \Nette\Object
 	}
 	
 	
-	public function getBound()
+	/**
+	 * 
+	 * @return Boolean
+	 */
+	public function getMarkerClusterer()
 	{
-		return $this->bound;
+		return $this->markerClusterer;
 	}
+	
 
 	
 	/**
@@ -147,9 +169,13 @@ class Markers extends \Nette\Object
 	}
 	
 	
-	public function getMarkerClusterer()
+	/**
+	 * 
+	 * @return Boolean
+	 */
+	public function getBound()
 	{
-		return $this->markerClusterer;
+		return $this->bound;
 	}
 	
 	

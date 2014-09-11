@@ -1,11 +1,17 @@
 <?php
+/**
+ * Copyright (c) 2014 Petr Olišar (http://olisar.eu)
+ *
+ * For the full copyright and license information, please view
+ * the file LICENSE.md that was distributed with this source code.
+ */
 
 namespace Oli\GoogleAPI;
 
 /**
  * Description of MapApiExtension
  *
- * @author petr
+ * @author Petr Olišar <petr.olisar@gmail.com>
  */
 class MapApiExtension extends \Nette\DI\CompilerExtension
 {
