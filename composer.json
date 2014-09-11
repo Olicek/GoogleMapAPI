@@ -3,6 +3,7 @@
 	"type": "library",
 	"description": "Tool for paste google map to the page with markers",
 	"keywords": ["google","maps", "nette"],
+	"homepage": "https://github.com/Olicek/GoogleMapAPI",
 	"license": "GPL-3.0",
 	"authors": [
 		{
@@ -13,17 +14,9 @@
 	],
 	"require": {
 		"php": ">=5.3.0",
-		"nette/nette": ">=2.0.13"
+		"nette/nette": ">=2.1"
 	},
 	"autoload": {
-        "psr-0": {
-            "Oli\\": ""
-        }
-    },
-	"repositories": [
-		{
-			"type": "composer",
-			"url": "http://addons.nette.org/"
-		}
-	]
+		"classmap": ["src/"]
+	}
 }

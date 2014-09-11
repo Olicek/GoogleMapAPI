@@ -30,9 +30,9 @@ class MapAPI extends Control
 	private $key;
 	/** @var Array */
 	private $markers = array();
-	/** @var Boolean */
 	private $bound;
 	private $markerClusterer;
+	
 	
 	
 	public function setup($config)
@@ -113,18 +113,6 @@ class MapAPI extends Control
 	}
 	
 	
-	public function isMarkerClusterer($cluster)
-	{
-		if (!is_bool($cluster))
-		{
-			throw new \InvalidArgumentException("staticMap must be boolean, $cluster (".gettype($cluster).") was given");
-		}
-		
-		$this->markerClusterer = $cluster;
-		return $this;
-	}
-	
-	
 	/**
 	 * @return array Width and Height of the map.
 	 */
@@ -183,17 +171,8 @@ class MapAPI extends Control
 	public function addMarkers(Markers $markers)
 	{
 		$this->markers = $markers->getMarkers();
-	}
-	
-	
-	/**
-	 * @param Boolean $bound Show all of markers
-	 * @return \Oli\GoogleAPI\MapAPI
-	 */
-	public function fitBounds($bound = true)
-	{
-		$this->bound = $bound;
-		return $this;
+		$this->bound = $markers->getBound();
+		$this->markerClusterer = $markers->getMarkerClusterer();
 	}
 	
 	

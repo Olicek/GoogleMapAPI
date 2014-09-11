@@ -17,9 +17,9 @@ class MapApiExtension extends \Nette\DI\CompilerExtension
 	    'coordinates' => array(),
 	    'type' => 'ROADMAP',
 	    'static' => false,
-	    'bound' => false,
-	    'markerClusterer' => false,
 	    'markers' => array(
+		'bound' => false,
+		'markerClusterer' => false,
 		'iconDefaultPath' => null,
 		'icon' => null,
 		'addMarkers' => array()
@@ -39,8 +39,6 @@ class MapApiExtension extends \Nette\DI\CompilerExtension
 			->addSetup('setKey', [$config['key']])
 			->addSetup('setCoordinates', [$config['coordinates']])
 			->addSetup('setType', [$config['type']])
-			->addSetup('fitBounds', [$config['bound']])
-			->addSetup('isMarkerClusterer', [$config['markerClusterer']])
 			->addSetup('isStaticMap', [$config['static']])
 			->addSetup('setZoom', [$config['zoom']]);
 		
@@ -48,6 +46,8 @@ class MapApiExtension extends \Nette\DI\CompilerExtension
 			->setImplement('Oli\GoogleAPI\IMarkers')
 			->setFactory('Oli\GoogleAPI\Markers')
 			->addSetup('setDefaultIconPath', [$config['markers']['iconDefaultPath']])
+			->addSetup('fitBounds', [$config['markers']['bound']])
+			->addSetup('isMarkerClusterer', [$config['markers']['markerClusterer']])
 			->addSetup('addMarkers', [$config['markers']['addMarkers']]);
 	}
 }

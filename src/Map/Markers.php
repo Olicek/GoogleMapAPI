@@ -16,6 +16,9 @@ class Markers extends \Nette\Object
 	private $markers = array();
 	/** @var String */
 	private $iconDefaultPath;
+	/** @var Boolean */
+	private $bound;
+	private $markerClusterer;
 	
 	
 	public function addMarkers(array $markers)
@@ -112,6 +115,41 @@ class Markers extends \Nette\Object
 		$this->markers[$key]['message'] = $message;
 		$this->markers[$key]['autoOpen'] = $autoOpen;
 		return $this;
+	}
+	
+	
+	public function isMarkerClusterer($cluster)
+	{
+		if (!is_bool($cluster))
+		{
+			throw new \InvalidArgumentException("staticMap must be boolean, $cluster (".gettype($cluster).") was given");
+		}
+		
+		$this->markerClusterer = $cluster;
+		return $this;
+	}
+	
+	
+	public function getBound()
+	{
+		return $this->bound;
+	}
+
+	
+	/**
+	 * @param Boolean $bound Show all of markers
+	 * @return \Oli\GoogleAPI\MapAPI
+	 */
+	public function fitBounds($bound = true)
+	{
+		$this->bound = $bound;
+		return $this;
+	}
+	
+	
+	public function getMarkerClusterer()
+	{
+		return $this->markerClusterer;
 	}
 	
 	
