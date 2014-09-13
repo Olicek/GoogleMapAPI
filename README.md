@@ -67,14 +67,14 @@ Simplest usage
 
 To your presenter include (if you have PHP 5.4+)
 
+``` php	
+class MapPresenter extends Nette\Application\UI\Presenter
+{
+	use \Oli\GoogleAPI\TMap;
 	
-	class MapPresenter extends Nette\Application\UI\Presenter
-	{
-		use \Oli\GoogleAPI\TMap;
-		
-		// ...
-	}
-	
+	// ...
+}
+```	
 and to template
 
 	{control map}
@@ -82,27 +82,27 @@ and to template
 
 Define map in component
 =======================
+``` php
+private $map;
+private $markers;
 
-	private $map;
-	private $markers;
-	
-	public function __constructor(\Oli\GoogleAPI\IMapAPI $mapApi, \Oli\GoogleAPI\IMarkers $markers)
-	{
-		$this->map = $mapApi;
-		$this->markers = $markers;
-	}
-	
-	public function createComponentMap()
-	{
-		$map = $this->map->create();
-		$markers = $this->markers->create();
-		
-		// ...
-		
-		$map->addMarkers($markers);
-		return $map;
-	}
+public function __constructor(\Oli\GoogleAPI\IMapAPI $mapApi, \Oli\GoogleAPI\IMarkers $markers)
+{
+	$this->map = $mapApi;
+	$this->markers = $markers;
+}
 
+public function createComponentMap()
+{
+	$map = $this->map->create();
+	$markers = $this->markers->create();
+	
+	// ...
+	
+	$map->addMarkers($markers);
+	return $map;
+}
+```
 And in template
 
 	{* JS and HTML *}
@@ -171,34 +171,34 @@ config.neon
 		defaultIconPath: images/mapPoints
 
 Presenter
-
-	protected function createComponentGoogleMap()
+``` php
+protected function createComponentGoogleMap()
+{
+	$map = $this->map->create();
+	
+	$map->setCoordinates(array(50.250718,14.583435))
+		->setZoom(4)
+		->setType(MapAPI::TERRAIN);
+		
+	$markers = $this->markers->create();
+	$markers->fitBounds();
+	
+	if(count($markersFromDb) > 30)
 	{
-		$map = $this->map->create();
-		
-		$map->setCoordinates(array(50.250718,14.583435))
-			->setZoom(4)
-			->setType(MapAPI::TERRAIN);
-			
-		$markers = $this->markers->create();
-		$markers->fitBounds();
-		
-		if(count($markersFromDb) > 30)
-		{
-			$markers->isMarkerClusterer();
-		}
-		
-		foreach ($markersFromDb as $marker)
-		{
-			$markers->addMarker(array($marker->lat, $marker->lng), Marker::DROP)
-				->setMessage(
-					'<h1>'.$marker->title.'</h1><br />'.$marker->description
-				)->setIcon($marker->icon);
-		}
-		$map->addMarkers($markers);
-		return $map;
+		$markers->isMarkerClusterer();
 	}
-
+	
+	foreach ($markersFromDb as $marker)
+	{
+		$markers->addMarker(array($marker->lat, $marker->lng), Marker::DROP)
+			->setMessage(
+				'<h1>'.$marker->title.'</h1><br />'.$marker->description
+			)->setIcon($marker->icon);
+	}
+	$map->addMarkers($markers);
+	return $map;
+}
+```
 Template
 
 	{block content}
