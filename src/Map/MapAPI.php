@@ -224,6 +224,13 @@ class MapAPI extends Control
 	*/
 	public function render() 
 	{
+		$this->renderJS();
+		$this->renderHTML();
+	}
+	
+	
+	public function renderJS()
+	{
 		$this->template->height = $this->height;
 		$this->template->width = $this->width;
 		$this->template->position = $this->coordinates;
@@ -232,8 +239,19 @@ class MapAPI extends Control
 		$this->template->key = $this->key;
 		$this->template->bound = $this->bound;
 		$this->template->cluster = $this->markerClusterer;
+		$this->template->setFile(dirname(__FILE__) . '/js.latte');
+		$this->template->render();
+	}
+	
+	
+	public function renderHTML()
+	{
 		if ($this->staticMap)
 		{
+			$this->template->height = $this->height;
+			$this->template->width = $this->width;
+			$this->template->zoom = $this->zoom;
+			$this->template->position = $this->coordinates;
 			$this->template->markers = $this->markers;
 			$this->template->setFile(dirname(__FILE__) . '/static.latte');
 		} else
