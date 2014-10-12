@@ -12,7 +12,7 @@ Requirements
 Installation
 ============
 
-	composer require olicek/google-map-api: dev-master
+	composer require olicek/google-map-api:dev-master
 
 then you can enable the extension using your neon config
 
