@@ -39,6 +39,8 @@ class MapAPI extends Control
 	private $bound;
 	/** @var boolean */
 	private $markerClusterer;
+	/** @var boolean */		
+	private $scrollable;
 	
 	
 	/**
@@ -196,6 +198,18 @@ class MapAPI extends Control
 	}
 	
 	
+	public function isScrollable($scrollable = true)
+	{
+		if (!is_bool($scrollable))
+		{
+			throw new \InvalidArgumentException("staticMap must be boolean, $scrollable (".gettype($scrollable).") was given");
+		}
+		
+		$this->scrollable = $scrollable;
+		return $this;
+	}
+
+
 	/**
 	 * 
 	 * @param \Oli\GoogleAPI\Markers $markers
@@ -237,6 +251,7 @@ class MapAPI extends Control
 		$this->template->zoom = $this->zoom;
 		$this->template->type = $this->type;
 		$this->template->key = $this->key;
+		$this->template->scrollable = $this->scrollable;
 		$this->template->bound = $this->bound;
 		$this->template->cluster = $this->markerClusterer;
 		$this->template->setFile(dirname(__FILE__) . '/js.latte');

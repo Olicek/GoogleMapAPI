@@ -22,6 +22,7 @@ class MapApiExtension extends \Nette\DI\CompilerExtension
 	    'zoom' => 7,
 	    'coordinates' => array(),
 	    'type' => 'ROADMAP',
+	    'scrollable' => true,
 	    'static' => false,
 	    'markers' => array(
 		'bound' => false,
@@ -46,9 +47,10 @@ class MapApiExtension extends \Nette\DI\CompilerExtension
 			->addSetup('setCoordinates', [$config['coordinates']])
 			->addSetup('setType', [$config['type']])
 			->addSetup('isStaticMap', [$config['static']])
+			->addSetup('isScrollable', [$config['scrollable']])
 			->addSetup('setZoom', [$config['zoom']]);
 		
-		$markers = $builder->addDefinition($this->prefix('markers'))
+		$builder->addDefinition($this->prefix('markers'))
 			->setImplement('Oli\GoogleAPI\IMarkers')
 			->setFactory('Oli\GoogleAPI\Markers')
 			->addSetup('setDefaultIconPath', [$config['markers']['iconDefaultPath']])

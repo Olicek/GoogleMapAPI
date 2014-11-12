@@ -8,7 +8,7 @@
 }
 </style>
 
-<script type="text/javascript" src="{$basePath}/js/markerclusterer.js"></script>
+{if $cluster}<script type="text/javascript" src="{$basePath}/js/markerclusterer.js"></script>{/if}
 <script type="text/javascript">
 	
 	var map;
@@ -24,7 +24,8 @@
 		var mapOptions = {
 			center: centerMap,
 			zoom: {$zoom},
-			mapTypeId: google.maps.MapTypeId.{!$type}
+			mapTypeId: google.maps.MapTypeId.{!$type},
+			scrollwheel: {$scrollable}
 		};
 
 		// Display a map on the page
