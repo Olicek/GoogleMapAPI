@@ -42,20 +42,20 @@ class MapApiExtension extends \Nette\DI\CompilerExtension
 		$builder->addDefinition($this->prefix('mapAPI'))
 			->setImplement('Oli\GoogleAPI\IMapAPI')
 			->setFactory('Oli\GoogleAPI\MapAPI')
-			->addSetup('setup', [$config])
-			->addSetup('setKey', [$config['key']])
-			->addSetup('setCoordinates', [$config['coordinates']])
-			->addSetup('setType', [$config['type']])
-			->addSetup('isStaticMap', [$config['static']])
-			->addSetup('isScrollable', [$config['scrollable']])
-			->addSetup('setZoom', [$config['zoom']]);
+			->addSetup('setup', array($config))
+			->addSetup('setKey', array($config['key']))
+			->addSetup('setCoordinates', array($config['coordinates']))
+			->addSetup('setType', array($config['type']))
+			->addSetup('isStaticMap', array($config['static']))
+			->addSetup('isScrollable', array($config['scrollable']))
+			->addSetup('setZoom', array($config['zoom']));
 		
 		$builder->addDefinition($this->prefix('markers'))
 			->setImplement('Oli\GoogleAPI\IMarkers')
 			->setFactory('Oli\GoogleAPI\Markers')
-			->addSetup('setDefaultIconPath', [$config['markers']['iconDefaultPath']])
-			->addSetup('fitBounds', [$config['markers']['bound']])
-			->addSetup('isMarkerClusterer', [$config['markers']['markerClusterer']])
-			->addSetup('addMarkers', [$config['markers']['addMarkers']]);
+			->addSetup('setDefaultIconPath', array($config['markers']['iconDefaultPath']))
+			->addSetup('fitBounds', array($config['markers']['bound']))
+			->addSetup('isMarkerClusterer', array($config['markers']['markerClusterer']))
+			->addSetup('addMarkers', array($config['markers']['addMarkers']));
 	}
 }
