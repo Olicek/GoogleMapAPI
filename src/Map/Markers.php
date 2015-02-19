@@ -216,7 +216,7 @@ class Markers extends \Nette\Object
 	 */
 	public function setColor($color)
 	{
-		$allowed = array('black', 'brown', 'green', 'purple', 'yellow', 'blue', 'gray', 'orange', 'red', 'white');
+		$allowed = array('green', 'purple', 'yellow', 'blue', 'orange', 'red');
 		if (!in_array($color, $allowed))
 		{
 			if (!\Nette\Utils\Strings::match($color, '~^0x[a-f0-9]{6}$~i'))

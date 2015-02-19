@@ -235,31 +235,8 @@ class MapAPI extends Control
 	
 	/**
 	* @see Nette\Application\Control#render()
-	*/
-	public function render() 
-	{
-		$this->renderJS();
-		$this->renderHTML();
-	}
-	
-	
-	public function renderJS()
-	{
-		$this->template->height = $this->height;
-		$this->template->width = $this->width;
-		$this->template->position = $this->coordinates;
-		$this->template->zoom = $this->zoom;
-		$this->template->type = $this->type;
-		$this->template->key = $this->key;
-		$this->template->scrollable = $this->scrollable;
-		$this->template->bound = $this->bound;
-		$this->template->cluster = $this->markerClusterer;
-		$this->template->setFile(dirname(__FILE__) . '/js.latte');
-		$this->template->render();
-	}
-	
-	
-	public function renderHTML()
+	*/	
+	public function render()
 	{
 		if ($this->staticMap)
 		{
@@ -271,6 +248,18 @@ class MapAPI extends Control
 			$this->template->setFile(dirname(__FILE__) . '/static.latte');
 		} else
 		{
+			$map = array(
+			    'position' => $this->coordinates,
+			    'height' => $this->height,
+			    'width' => $this->width,
+			    'zoom' => $this->zoom,
+			    'type' => $this->type,
+			    'scrollable' => $this->scrollable,
+			    'key' => $this->key,
+			    'bound' => $this->bound,
+			    'cluster' => $this->markerClusterer
+			);
+			$this->template->map = \Nette\Utils\Json::encode($map);
 			$this->template->setFile(dirname(__FILE__) . '/template.latte');
 		}
 		$this->template->render();
