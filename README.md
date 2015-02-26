@@ -86,7 +86,7 @@ Define map in component
 private $map;
 private $markers;
 
-public function __constructor(\Oli\GoogleAPI\IMapAPI $mapApi, \Oli\GoogleAPI\IMarkers $markers)
+public function __construct(\Oli\GoogleAPI\IMapAPI $mapApi, \Oli\GoogleAPI\IMarkers $markers)
 {
 	$this->map = $mapApi;
 	$this->markers = $markers;
