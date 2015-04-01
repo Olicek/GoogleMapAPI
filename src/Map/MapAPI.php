@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2014 Petr Olišar (http://olisar.eu)
+ * Copyright (c) 2015 Petr Olišar (http://olisar.eu)
  *
  * For the full copyright and license information, please view
  * the file LICENSE.md that was distributed with this source code.
@@ -17,7 +17,8 @@ use Nette\Application\Responses\JsonResponse;
  */
 class MapAPI extends Control
 {
-	const ROADMAP = 'ROADMAP', SATELLITE = 'SATELLITE', HYBRID = 'HYBRID', TERRAIN = 'TERRAIN';
+	const ROADMAP = 'ROADMAP', SATELLITE = 'SATELLITE', HYBRID = 'HYBRID', TERRAIN = 'TERRAIN',
+		BICYCLING = 'BICYCLING', DRIVING = 'DRIVING', TRANSIT = 'TRANSIT', WALKING = 'WALKING';
 	
 	/** @var String */
 	private $width;
@@ -30,7 +31,7 @@ class MapAPI extends Control
 	/** @var String */
 	private $type;
 	/** @var Boolean */
-	private $staticMap = false;
+	private $staticMap = FALSE;
 	/** @var String  */
 	private $key;
 	/** @var Array */
@@ -41,6 +42,16 @@ class MapAPI extends Control
 	private $markerClusterer;
 	/** @var boolean */		
 	private $scrollable;
+	/**
+	 *
+	 * @var array
+	 */
+	private $waypoints;
+	/**
+	 *
+	 * @var array
+	 */
+	private $direction = ['travelmode' => 'DRIVING'];
 	
 	
 	/**
@@ -69,7 +80,7 @@ class MapAPI extends Control
 		
 		if(!count($coordinates))
 		{
-			$this->coordinates = array(null, null);
+			$this->coordinates = array(NULL, NULL);
 		} else
 		{
 			$this->coordinates = array_values($coordinates);
@@ -144,6 +155,31 @@ class MapAPI extends Control
 	}
 	
 	
+	public function setWaypoint($key, $waypoint)
+	{
+		if($key === 'waypoints')
+		{
+			$this->waypoints['waypoints'][] = $waypoint;
+			
+		} else
+		{
+			$this->waypoints[$key] = $waypoint;
+		}
+		return $this;
+	}
+	
+	
+	public function setDirection(array $direction)
+	{
+		$this->direction = $direction;
+		if(!array_key_exists('travelmode', $this->direction))
+		{
+			$this->direction['travelmode'] = 'DRIVING';
+		}
+		return $this;
+	}
+	
+	
 	/**
 	 * @return array Width and Height of the map.
 	 */
@@ -186,7 +222,7 @@ class MapAPI extends Control
 	 * @return \Oli\GoogleAPI\MapAPI
 	 * @throws \InvalidArgumentException
 	 */
-	public function isStaticMap($staticMap = true)
+	public function isStaticMap($staticMap = TRUE)
 	{
 		if (!is_bool($staticMap))
 		{
@@ -198,7 +234,7 @@ class MapAPI extends Control
 	}
 	
 	
-	public function isScrollable($scrollable = true)
+	public function isScrollable($scrollable = TRUE)
 	{
 		if (!is_bool($scrollable))
 		{
@@ -257,7 +293,8 @@ class MapAPI extends Control
 			    'scrollable' => $this->scrollable,
 			    'key' => $this->key,
 			    'bound' => $this->bound,
-			    'cluster' => $this->markerClusterer
+			    'cluster' => $this->markerClusterer,
+			    'waypoint' => !is_null($this->waypoints) ? array_merge($this->waypoints, $this->direction) : NULL
 			);
 			$this->template->map = \Nette\Utils\Json::encode($map);
 			$this->template->setFile(dirname(__FILE__) . '/template.latte');

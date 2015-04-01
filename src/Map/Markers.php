@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2014 Petr Olišar (http://olisar.eu)
+ * Copyright (c) 2015 Petr Olišar (http://olisar.eu)
  *
  * For the full copyright and license information, please view
  * the file LICENSE.md that was distributed with this source code.
@@ -98,6 +98,11 @@ class Markers extends \Nette\Object
 		return $this;
 	}
 	
+	
+	public function getMarker()
+	{
+		return end($this->markers);
+	}
 	
 	/**
 	 * @return Array
@@ -211,7 +216,7 @@ class Markers extends \Nette\Object
 	
 	/**
 	 * 
-	 * @param String $color Color can be 24-bit color or: black, brown, green, purple, yellow, blue, gray, orange, red, white
+	 * @param String $color Color can be 24-bit color or: green, purple, yellow, blue, gray, orange, red
 	 * @return \Oli\GoogleAPI\Markers
 	 */
 	public function setColor($color)

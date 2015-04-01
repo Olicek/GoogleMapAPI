@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2014 Petr Olišar (http://olisar.eu)
+ * Copyright (c) 2015 Petr Olišar (http://olisar.eu)
  *
  * For the full copyright and license information, please view
  * the file LICENSE.md that was distributed with this source code.
@@ -56,4 +56,5 @@ trait TMap
 		$map->addMarkers($this->googleMapMarkers->create());
 		return $map;
 	}
+	
 }

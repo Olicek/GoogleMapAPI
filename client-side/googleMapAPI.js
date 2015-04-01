@@ -1,9 +1,9 @@
-/**
- * Copyright (c) 2015 Petr Olišar (http://olisar.eu)
- *
- * For the full copyright and license information, please view
- * the file LICENSE.md that was distributed with this source code.
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
  */
+
 
 var GoogleMap = GoogleMap || {};
 
@@ -11,6 +11,8 @@ GoogleMap = function(element)
 {
 	this.element = element;
 	this.map;
+	this.directionsDisplay;
+	this.directionsService;
 	this.markers = [];
 	this.options = {};
 	this.boundsProperty;
@@ -43,6 +45,7 @@ GoogleMap.prototype = {
 		this.options.key = properties.key;
 		this.options.bound = properties.bound;
 		this.options.cluster = properties.cluster;
+		this.options.waypoints = properties.waypoint;
 		
 		this.URL = this.element.dataset.markersfallback;
 		
@@ -66,6 +69,11 @@ GoogleMap.prototype = {
 		base.map = new google.maps.Map(base.element, mapOptions);
 		base.map.setTilt(45);
 		base.loadMarkers();
+		
+		if (base.options.waypoints !== null)
+		{
+			base.drawDirections();
+		}
 	},
 	
 	loadMarkers: function()
@@ -94,6 +102,64 @@ GoogleMap.prototype = {
 		};
 
 		request.send();
+	},
+	
+	drawDirections: function ()
+	{
+		var base = this;
+		if (base.options.waypoints.start === undefined ||
+		  base.options.waypoints.end === undefined) {
+			console.log('You must define start and end point of the way!');
+		}
+		var start = base.options.waypoints.start;
+		var end = base.options.waypoints.end;
+		var waypoints = [];
+
+		if (base.options.waypoints.waypoints !== undefined) {
+			for (var i = 0; i < base.options.waypoints.waypoints.length; i++) {
+				waypoints.push({
+				location: new google.maps.LatLng(
+				  base.options.waypoints.waypoints[i].position[0],
+				  base.options.waypoints.waypoints[i].position[1]),
+				stopover:true});
+			}
+		}
+
+		base.directionsDisplay = new google.maps.DirectionsRenderer();
+		base.directionsService = new google.maps.DirectionsService();
+		base.directionsDisplay.setMap(base.map);
+		var request = {
+			origin: new google.maps.LatLng(start.position[0], start.position[1]),
+			destination: new google.maps.LatLng(end.position[0], end.position[1]),
+			waypoints: waypoints,
+			optimizeWaypoints: true,
+			travelMode: google.maps.TravelMode[base.options.waypoints.travelmode]
+		};
+
+		function merge_options(obj1,obj2){
+			var obj3 = {};
+			for (var attrname in obj1) {
+				if (attrname !== 'start' && attrname !== 'end' &&
+				  attrname !== 'travelmode') {
+					obj3[attrname] = obj1[attrname];
+				}
+			}
+			for (var attrname in obj2) {
+				if (attrname !== 'start' && attrname !== 'end' &&
+				  attrname !== 'travelmode' && attrname !== 'waypoints') {
+					obj3[attrname] = obj2[attrname];
+				}
+			}
+			return obj3;
+		}
+
+		request = merge_options(request, base.options.waypoints);
+		base.directionsService.route(request, function(response, status) {
+			if (status == google.maps.DirectionsStatus.OK) {
+				base.directionsDisplay.setDirections(response);
+				var route = response.routes[0];
+			}
+		});
 	},
 	
 	insertMarkers: function(markers)
@@ -189,17 +255,7 @@ GoogleMap.prototype = {
 		var animation;
 		if ("animation" in marker)
 		{
-			switch(marker['animation'])
-			{
-				case 'DROP':
-				  animation = google.maps.Animation.DROP;
-				  break;
-				case 'BOUNCE':
-				  animation = google.maps.Animation.BOUNCE;
-				  break;
-				default:
-				  null;
-			}
+			animation = google.maps.Animation[marker.animation];
 		}
 		
 		return animation;
