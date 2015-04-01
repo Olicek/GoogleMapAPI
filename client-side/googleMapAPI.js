@@ -1,9 +1,9 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (c) 2015 Petr Olišar (http://olisar.eu)
+ *
+ * For the full copyright and license information, please view
+ * the file LICENSE.md that was distributed with this source code.
  */
-
 
 var GoogleMap = GoogleMap || {};
 
@@ -259,6 +259,11 @@ var map;
 Array.prototype.forEach.call(document.getElementsByClassName('googleMapAPI'), function(el, i){
 	map = new GoogleMap(el);
 	map.doProportions();
+	if (typeof google === "undefined") {
+            loadScript();
+        } else {
+            map.initialize();
+        }
 });
 
 function loadScript() {
@@ -269,5 +274,3 @@ function loadScript() {
 	'callback=map.initialize'+key;
 	document.body.appendChild(script);
 }
-
-window.onload = loadScript;
