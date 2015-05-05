@@ -20,4 +20,4 @@ extensions:
     	
 The last step is to link `client-side/googleMapAPI.js` to your page.
 
-[Documentation](https://github.com/Olicek/GoogleMapAPI/blob/master/docs/en/index.md)
+[Documentation](https://github.com/Olicek/GoogleMapAPI/blob/master/docs/en)
