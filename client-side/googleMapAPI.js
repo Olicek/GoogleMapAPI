@@ -200,7 +200,7 @@ GoogleMap.prototype = {
 				new MarkerClusterer(base.map, base.markersCluster);
 			} else 
 			{
-				throw 'MarkerClusterer is not loaded!';
+				throw 'MarkerClusterer is not loaded! Please use markerclusterer.js from client-side folder';
 			}
 		}
 	},
@@ -217,36 +217,23 @@ GoogleMap.prototype = {
 	doBounds: function(functionName, position)
 	{
 		var base = this;
-		
 		if (base.options.bound)
 		{
-			switch (functionName)
-			{
-				case 'init':
-					init();
-					break;
-				case 'fill':
-					fill();
-					break;
-				case 'fit':
-					fit();
-					break;
-			}
-			
-			function init()
-			{
-				base.boundsProperty = new google.maps.LatLngBounds();
-			}
-
-			function fill()
-			{
-				base.boundsProperty.extend(position);
-			}
-
-			function fit()
-			{
-				base.map.fitBounds(base.boundsProperty);
-			}
+			var fn = {
+				init: function()
+				{
+					base.boundsProperty = new google.maps.LatLngBounds();
+				},
+				fill: function()
+				{
+					base.boundsProperty.extend(position);
+				},
+				fit: function()
+				{
+					base.map.fitBounds(base.boundsProperty);
+				}
+			};
+			fn[functionName];
 		}
 	},
 	
