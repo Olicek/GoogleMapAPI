@@ -1,9 +1,9 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Copyright (c) 2015 Petr Olišar (http://olisar.eu)
+ *
+ * For the full copyright and license information, please view
+ * the file LICENSE.md that was distributed with this source code.
  */
-
 
 var GoogleMap = GoogleMap || {};
 
@@ -15,6 +15,7 @@ GoogleMap = function(element)
 	this.directionsService;
 	this.markers = [];
 	this.options = {};
+	this.basePath;
 	this.boundsProperty;
 	this.markersCluster = new Array();
 	this.URL = "";
@@ -46,7 +47,7 @@ GoogleMap.prototype = {
 		this.options.bound = properties.bound;
 		this.options.cluster = properties.cluster;
 		this.options.waypoints = properties.waypoint;
-		
+		this.basePath = this.element.dataset.basepath;
 		this.URL = this.element.dataset.markersfallback;
 		
 		return this;
@@ -288,7 +289,31 @@ GoogleMap.prototype = {
 	{
 		if ("icon" in option)
 		{
-			marker.setIcon(option['icon']);
+			var host = "http://"+window.location.hostname;
+			if( option['icon'] instanceof Object ) {
+				var icon = {
+					url: host+this.basePath + '/' + option['icon']['url']
+				};
+				
+				if (option['icon']['size'] !== null) {
+					icon['size'] = new google.maps.Size(option['icon']['size'][0], option['icon']['size'][1]);
+				}
+				
+				if (option['icon']['anchor'] !== null) {
+					icon['size'] = new new google.maps.Point(option['icon']['anchor'][0], option['icon']['anchor'][1]);
+				}
+				
+				if (option['icon']['origin'] !== null) {
+					icon['size'] = new new google.maps.Point(option['icon']['orign'][0], option['icon']['origin'][1]);
+				}
+				
+			} else {
+				var icon = {
+					url: host+this.basePath + '/' + option['icon']
+				};
+			}
+			
+			marker.setIcon(icon);
 		}
 	},
 	

@@ -61,7 +61,30 @@ class Markers extends \Nette\Object
 				
 				if(array_key_exists('icon', $marker))
 				{
-					$this->setIcon($marker['icon']);
+					if(is_array($marker['icon']))
+					{
+						$icon = new Marker\Icon($marker['icon']['url']);
+						
+						if(array_key_exists('size', $marker['icon']))
+						{
+							$icon->setSize($marker['icon']['size']);
+						}
+						
+						if(array_key_exists('anchor', $marker['icon']))
+						{
+							$icon->setAnchor($marker['icon']['anchor']);
+						}
+						
+						if(array_key_exists('origin', $marker['icon']))
+						{
+							$icon->setOrigin($marker['icon']['origin']);
+						}
+						$this->setIcon($icon);
+						
+					} else
+					{
+						$this->setIcon($marker['icon']);
+					}
 				}
 				
 				if(array_key_exists('color', $marker))
@@ -186,13 +209,21 @@ class Markers extends \Nette\Object
 	
 	/**
 	 * 
-	 * @param String $icon
+	 * @param Marker\Icon | String $icon
 	 */
 	public function setIcon($icon)
 	{
 		end($this->markers);         // move the internal pointer to the end of the array
 		$key = key($this->markers);
-		$this->markers[$key]['icon'] = is_null($this->iconDefaultPath) ? $icon : $this->iconDefaultPath . $icon;
+		if($icon instanceof Marker\Icon)
+		{
+			$icon->setUrl(is_null($this->iconDefaultPath) ? $icon->getUrl() : $this->iconDefaultPath . $icon->getUrl());
+			$this->markers[$key]['icon'] = $icon->getArray();
+			
+		} else
+		{
+			$this->markers[$key]['icon'] = is_null($this->iconDefaultPath) ? $icon : $this->iconDefaultPath . $icon;
+		}
 	}
 	
 	
