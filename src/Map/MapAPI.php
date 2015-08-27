@@ -32,6 +32,8 @@ class MapAPI extends Control
 	private $type;
 	/** @var Boolean */
 	private $staticMap = FALSE;
+	/** @var Boolean */
+	private $clickable = FALSE;
 	/** @var String  */
 	private $key;
 	/** @var Array */
@@ -232,6 +234,29 @@ class MapAPI extends Control
 		$this->staticMap = $staticMap;
 		return $this;
 	}
+
+
+	/**
+	 *
+	 * @param Boolean $clickable
+	 * @return \Oli\GoogleAPI\MapAPI
+	 * @throws \InvalidArgumentException
+	 */
+	public function isClickable($clickable = TRUE)
+	{
+		if (!$this->staticMap)
+		{
+			throw new \InvalidArgumentException("the 'clickable' option only applies to static maps");
+		}
+
+		if (!is_bool($clickable))
+		{
+			throw new \InvalidArgumentException("clickable must be boolean, $clickable (".gettype($clickable).") was given");
+		}
+
+		$this->clickable = $clickable;
+		return $this;
+	}
 	
 	
 	public function isScrollable($scrollable = TRUE)
@@ -281,6 +306,7 @@ class MapAPI extends Control
 			$this->template->zoom = $this->zoom;
 			$this->template->position = $this->coordinates;
 			$this->template->markers = $this->markers;
+			$this->template->clickable = $this->clickable;
 			$this->template->setFile(dirname(__FILE__) . '/static.latte');
 		} else
 		{
