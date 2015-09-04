@@ -63,7 +63,7 @@ GoogleMap.prototype = {
 			center: new google.maps.LatLng(base.options.position[0], base.options.position[1]),
 			zoom: base.options.zoom,
 			mapTypeId: google.maps.MapTypeId[base.options.type],
-			scrollwheel: base.scrollable
+			scrollwheel: base.options.scrollable
 		};
 
 		// Display a map on the page
