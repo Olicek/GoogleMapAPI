@@ -163,7 +163,7 @@ protected function createComponentGoogleMap()
 		$addedMarker = $markers->addMarker(array($marker->lat, $marker->lng), Marker::DROP)
 			->setMessage(
 				'<h1>'.$marker->title.'</h1><br />'.$marker->description
-			)->setIcon($marker->icon);
+			)->setIcon($marker->icon)->getMarker();
 		
 		// $marker->waypoint can be start, end, waypoints
 		$map->setWaypoint($marker->waypoint, $addedMarker);

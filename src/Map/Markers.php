@@ -224,6 +224,8 @@ class Markers extends \Nette\Object
 		{
 			$this->markers[$key]['icon'] = is_null($this->iconDefaultPath) ? $icon : $this->iconDefaultPath . $icon;
 		}
+
+		return $this;
 	}
 	
 	
