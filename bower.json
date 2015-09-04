@@ -1,0 +1,20 @@
+{
+  "name": "google-maps-api-for-nette",
+  "description": "Simple integration Google Maps API for Nette Framework",
+  "main": [
+    "client-side/googleMapAPI.js"
+  ],
+   "authors": [
+    "Petr Olišar https://github.com/Olicek"
+  ],
+  "ignore": [
+     "docs",
+     "src"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "google",
+    "maps",
+    "nette"
+  ]
+}
