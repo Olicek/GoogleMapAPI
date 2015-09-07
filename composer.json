@@ -19,6 +19,8 @@
 		"nette/nette": ">=2.1"
 	},
 	"autoload": {
-		"classmap": ["src/"]
+		"psr-4": {
+			"Oli\\GoogleAPI\\": "src"
+		}
 	}
 }
