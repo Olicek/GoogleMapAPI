@@ -16,7 +16,9 @@
 		"php": ">=5.4.0"
 	},
 	"require-dev": {
-		"nette/nette": ">=2.1"
+		"nette/nette": ">=2.1",
+		"nette/tester": "~1.6",
+		"squizlabs/php_codesniffer": "2.*"
 	},
 	"autoload": {
 		"psr-4": {

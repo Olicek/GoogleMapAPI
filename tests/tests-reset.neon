@@ -1,0 +1,8 @@
+#parameters:
+#	db:
+#		database: presenters_test
+#
+#services:
+#	nette.latteFactory:
+#		setup:
+#			- setAutoRefresh(TRUE)

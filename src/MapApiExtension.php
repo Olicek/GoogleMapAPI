@@ -8,6 +8,7 @@
 
 namespace Oli\GoogleAPI;
 
+
 /**
  * Description of MapApiExtension
  *
@@ -15,6 +16,7 @@ namespace Oli\GoogleAPI;
  */
 class MapApiExtension extends \Nette\DI\CompilerExtension
 {
+
 	public $defaults = array(
 	    'key' => null,
 	    'width' => '100%',
@@ -58,4 +60,5 @@ class MapApiExtension extends \Nette\DI\CompilerExtension
 			->addSetup('isMarkerClusterer', array($config['markers']['markerClusterer']))
 			->addSetup('addMarkers', array($config['markers']['addMarkers']));
 	}
+
 }

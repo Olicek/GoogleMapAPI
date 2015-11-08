@@ -1,4 +1,4 @@
-Google Map API
+Google Map API [![Build Status](https://travis-ci.org/Olicek/GoogleMapAPI.svg?branch=master)](https://travis-ci.org/Olicek/GoogleMapAPI)
 =========
 This component is stated for Nette framework and it simlifies working with a Google map.
 

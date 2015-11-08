@@ -7,8 +7,10 @@
  */
 
 namespace Oli\GoogleAPI;
+
 use Nette\Application\UI\Control;
 use Nette\Application\Responses\JsonResponse;
+
 
 /**
  * Description of GoogleAPI
@@ -17,38 +19,52 @@ use Nette\Application\Responses\JsonResponse;
  */
 class MapAPI extends Control
 {
+
 	const ROADMAP = 'ROADMAP', SATELLITE = 'SATELLITE', HYBRID = 'HYBRID', TERRAIN = 'TERRAIN',
 		BICYCLING = 'BICYCLING', DRIVING = 'DRIVING', TRANSIT = 'TRANSIT', WALKING = 'WALKING';
 	
 	/** @var String */
 	private $width;
+
 	/** @var String */
 	private $height;
-	/** @var Array */
+
+	/** @var array */
 	private $coordinates;
+
 	/** @var Integer */
 	private $zoom;
+
 	/** @var String */
 	private $type;
+
 	/** @var Boolean */
 	private $staticMap = FALSE;
+
 	/** @var Boolean */
 	private $clickable = FALSE;
+
 	/** @var String  */
 	private $key;
-	/** @var Array */
+
+	/** @var array */
 	private $markers = array();
+
 	/** @var boolean */
 	private $bound;
+
 	/** @var boolean */
 	private $markerClusterer;
-	/** @var boolean */		
-	private $scrollable;
+
+	/** @var boolean */
+	private $scrollable = FALSE;
+
 	/**
 	 *
 	 * @var array
 	 */
 	private $waypoints;
+
 	/**
 	 *
 	 * @var array
@@ -68,18 +84,12 @@ class MapAPI extends Control
 
 	
 	/**
-	 * 
+	 *
 	 * @param array $coordinates (latitude, longitude) - center of the map
 	 * @return \Oli\GoogleAPI\MapAPI
-	 * @throws \InvalidArgumentException
 	 */
 	public function setCoordinates(array $coordinates)
 	{
-		if (!is_array($coordinates))
-		{
-			throw new \InvalidArgumentException("type must be array, $coordinates (".gettype($coordinates).") was given");
-		}
-		
 		if(!count($coordinates))
 		{
 			$this->coordinates = array(NULL, NULL);
@@ -106,7 +116,7 @@ class MapAPI extends Control
 	
 	
 	/**
-	 * 
+	 *
 	 * @param string $key
 	 * @return \Oli\GoogleAPI\MapAPI
 	 */
@@ -118,7 +128,7 @@ class MapAPI extends Control
 	
 	
 	/**
-	 * 
+	 *
 	 * @param int $zoom <0, 19>
 	 * @return \Oli\GoogleAPI\MapAPI
 	 * @throws \InvalidArgumentException
@@ -142,15 +152,16 @@ class MapAPI extends Control
 	
 	
 	/**
-	 * 
+	 *
 	 * @param String $type
 	 * @return \Oli\GoogleAPI\MapAPI
 	 */
 	public function setType($type)
 	{
-		if($type !== self::HYBRID || $type !== self::ROADMAP || $type !== self::SATELLITE || $type !== self::TERRAIN)
+		if($type !== self::HYBRID && $type !== self::ROADMAP && $type !== self::SATELLITE &&
+				$type !== self::TERRAIN)
 		{
-			
+			throw new \InvalidArgumentException;
 		}
 		$this->type = $type;
 		return $this;
@@ -216,10 +227,16 @@ class MapAPI extends Control
 	{
 		return $this->type;
 	}
+
+
+	public function getKey()
+	{
+		return $this->key;
+	}
 	
 	
 	/**
-	 * 
+	 *
 	 * @param Boolean $staticMap
 	 * @return \Oli\GoogleAPI\MapAPI
 	 * @throws \InvalidArgumentException
@@ -233,6 +250,12 @@ class MapAPI extends Control
 		
 		$this->staticMap = $staticMap;
 		return $this;
+	}
+
+
+	public function getIsStaticMap()
+	{
+		return $this->staticMap;
 	}
 
 
@@ -257,7 +280,13 @@ class MapAPI extends Control
 		$this->clickable = $clickable;
 		return $this;
 	}
-	
+
+
+	public function getIsClicable()
+	{
+		return $this->clickable;
+	}
+
 	
 	public function isScrollable($scrollable = TRUE)
 	{
@@ -271,8 +300,14 @@ class MapAPI extends Control
 	}
 
 
+	public function getIsScrollable()
+	{
+		return $this->scrollable;
+	}
+
+
 	/**
-	 * 
+	 *
 	 * @param \Oli\GoogleAPI\Markers $markers
 	 * @return \Oli\GoogleAPI\MapAPI
 	 */
@@ -296,7 +331,7 @@ class MapAPI extends Control
 	
 	/**
 	* @see Nette\Application\Control#render()
-	*/	
+	*/
 	public function render()
 	{
 		if ($this->staticMap)

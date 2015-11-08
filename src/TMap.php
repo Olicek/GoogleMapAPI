@@ -16,10 +16,12 @@ namespace Oli\GoogleAPI;
  */
 trait TMap
 {
+
 	/**
 	 * @var IMapAPI
 	 */
 	protected $googleMapAPI;
+
 	/**
 	 * @var IMarkers
 	 */
@@ -27,17 +29,15 @@ trait TMap
 
 
 	/**
-	 * 
 	 * @param \Oli\GoogleAPI\IMapAPI $mapApi
 	 */
-	public function injectGoogleMapAPI(IMapAPI $mapApi)
+	public function injectGoogleMapApi(IMapAPI $mapApi)
 	{
 		$this->googleMapAPI = $mapApi;
 	}
 	
 	
 	/**
-	 * 
 	 * @param \Oli\GoogleAPI\IMarkers $markers
 	 */
 	public function injectGoogleMapMarkers(IMarkers $markers)
@@ -47,7 +47,6 @@ trait TMap
 	
 	
 	/**
-	 * 
 	 * @return MapAPI
 	 */
 	public function createComponentMap()
