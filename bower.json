@@ -9,7 +9,9 @@
   ],
   "ignore": [
      "docs",
-     "src"
+     "src",
+	 "tests",
+	 "composer.json"
   ],
   "license": "MIT",
   "keywords": [

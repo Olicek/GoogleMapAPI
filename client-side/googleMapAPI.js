@@ -234,7 +234,7 @@ GoogleMap.prototype = {
 					base.map.fitBounds(base.boundsProperty);
 				}
 			};
-			fn[functionName];
+			fn[functionName]();
 		}
 	},
 	

@@ -160,7 +160,7 @@ protected function createComponentGoogleMap()
 	
 	foreach ($markersFromDb as $marker)
 	{
-		$addedMarker = $markers->addMarker(array($marker->lat, $marker->lng), Marker::DROP)
+		$addedMarker = $markers->addMarker(array($marker->lat, $marker->lng), Markers::DROP)
 			->setMessage(
 				'<h1>'.$marker->title.'</h1><br />'.$marker->description
 			)->setIcon($marker->icon)->getMarker();
