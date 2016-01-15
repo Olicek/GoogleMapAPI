@@ -23,10 +23,10 @@ class MapAPI extends Control
 	const ROADMAP = 'ROADMAP', SATELLITE = 'SATELLITE', HYBRID = 'HYBRID', TERRAIN = 'TERRAIN',
 		BICYCLING = 'BICYCLING', DRIVING = 'DRIVING', TRANSIT = 'TRANSIT', WALKING = 'WALKING';
 	
-	/** @var String */
+	/** @var double|string */
 	private $width;
 
-	/** @var String */
+	/** @var double|string */
 	private $height;
 
 	/** @var array */
@@ -103,8 +103,8 @@ class MapAPI extends Control
 	
 	
 	/**
-	 * @param double $width
-	 * @param double $height
+	 * @param double|string $width
+	 * @param double|string $height
 	 * @return MapAPI
 	 */
 	public function setProportions($width, $height)

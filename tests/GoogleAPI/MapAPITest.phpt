@@ -58,6 +58,9 @@ class MapAPITest extends TestCase
 	{
 		$this->map->setProportions(150, 300);
 		Assert::same(['width' => 150, 'height' => 300], $this->map->getProportions());
+
+		$this->map->setProportions('150px', '300px');
+		Assert::same(['width' => '150px', 'height' => '300px'], $this->map->getProportions());
 	}
 
 
