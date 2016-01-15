@@ -1,4 +1,4 @@
-Google Map API [![Packagist](https://img.shields.io/packagist/dt/olicek/google-map-api.svg)](https://packagist.org/packages/olicek/google-map-api/stats) [![Build Status](https://travis-ci.org/Olicek/GoogleMapAPI.svg?branch=master)](https://travis-ci.org/Olicek/GoogleMapAPI)
+Google Map API [![Latest Version on Packagist][ico-version]][link-packagist] [![Packagist](https://img.shields.io/packagist/dt/olicek/google-map-api.svg)](https://packagist.org/packages/olicek/google-map-api/stats) [![Build Status](https://travis-ci.org/Olicek/GoogleMapAPI.svg?branch=master)](https://travis-ci.org/Olicek/GoogleMapAPI) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Olicek/GoogleMapAPI/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Olicek/GoogleMapAPI/?branch=master)
 =========
 This component is stated for Nette framework and it simlifies working with a Google map.
 
