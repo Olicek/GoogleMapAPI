@@ -30,6 +30,8 @@ class Markers extends \Nette\Object
 	/** @var Boolean */
 	private $markerClusterer = FALSE;
 
+	private $clusterOptions = array();
+
 	
 	/**
 	 * @internal
@@ -140,8 +142,26 @@ class Markers extends \Nette\Object
 	{
 		return $this->markerClusterer;
 	}
-	
 
+
+	/**
+	 * @param array $options
+	 * @return \Oli\GoogleAPI\Markers
+	 */
+	public function setClusterOptions($options = array())
+	{
+		$this->clusterOptions = $options;
+		return $this;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getClusterOptions()
+	{
+		return $this->clusterOptions;
+	}
 	
 	/**
 	 * @param Boolean $bound Show all of markers
