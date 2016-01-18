@@ -56,6 +56,10 @@ class MapAPI extends Control
 	/** @var boolean */
 	private $markerClusterer;
 
+
+	/** @var array */
+	private $clusterOptions;
+
 	/** @var boolean */
 	private $scrollable = FALSE;
 
@@ -316,6 +320,7 @@ class MapAPI extends Control
 		$this->markers = $markers->getMarkers();
 		$this->bound = $markers->getBound();
 		$this->markerClusterer = $markers->getMarkerClusterer();
+		$this->clusterOptions = $markers->getClusterOptions();
 		return $this;
 	}
 	
@@ -355,6 +360,7 @@ class MapAPI extends Control
 			    'key' => $this->key,
 			    'bound' => $this->bound,
 			    'cluster' => $this->markerClusterer,
+			    'clusterOptions' => $this->clusterOptions,
 			    'waypoint' => !is_null($this->waypoints) ? array_merge($this->waypoints, $this->direction) : NULL
 			);
 			$this->template->map = \Nette\Utils\Json::encode($map);

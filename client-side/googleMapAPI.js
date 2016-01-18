@@ -46,6 +46,7 @@ GoogleMap.prototype = {
 		this.options.key = properties.key;
 		this.options.bound = properties.bound;
 		this.options.cluster = properties.cluster;
+		this.options.clusterOptions = properties.clusterOptions;
 		this.options.waypoints = properties.waypoint;
 		this.basePath = this.element.dataset.basepath;
 		this.URL = this.element.dataset.markersfallback;
@@ -198,7 +199,7 @@ GoogleMap.prototype = {
 		if (base.options.cluster)
 		{
 			if (typeof MarkerClusterer != 'undefined') {
-				new MarkerClusterer(base.map, base.markersCluster);
+				new MarkerClusterer(base.map, base.markersCluster, base.options.clusterOptions);
 			} else 
 			{
 				throw 'MarkerClusterer is not loaded! Please use markerclusterer.js from client-side folder';
