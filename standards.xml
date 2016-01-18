@@ -6,7 +6,7 @@
     <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
     <rule ref="Generic.CodeAnalysis.JumbledIncrementer"/>
     <rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
-    <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
+    <!-- <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/> -->
 
     <!-- Files -->
     <rule ref="Generic.Files.ByteOrderMark"/>
