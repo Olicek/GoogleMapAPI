@@ -56,7 +56,6 @@ class MapAPI extends Control
 	/** @var boolean */
 	private $markerClusterer;
 
-
 	/** @var array */
 	private $clusterOptions;
 
@@ -74,8 +73,10 @@ class MapAPI extends Control
 	 * @var array
 	 */
 	private $direction = ['travelmode' => 'DRIVING'];
-	
-	public function __construct(){
+
+
+	public function __construct()
+	{
 		parent::__construct();
 	}
 
