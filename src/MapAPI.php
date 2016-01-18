@@ -75,7 +75,10 @@ class MapAPI extends Control
 	 */
 	private $direction = ['travelmode' => 'DRIVING'];
 	
-	
+	public function __construct(){
+		parent::__construct();
+	}
+
 	/**
 	 * @internal
 	 * @param array $config
