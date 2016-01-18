@@ -8,6 +8,9 @@
 
 namespace Oli\GoogleAPI;
 
+use Nette\InvalidArgumentException;
+
+
 /**
  * Description of Markers
  *
@@ -249,6 +252,11 @@ class Markers extends \Nette\Object
 			{
 				throw new \Nette\InvalidArgumentException('Color must be 24-bit color or from the allowed list.');
 			}
+		}
+
+		if (!count($this->markers))
+		{
+			throw new InvalidArgumentException("setColor must be called after addMarker()");
 		}
 		end($this->markers);         // move the internal pointer to the end of the array
 		$key = key($this->markers);

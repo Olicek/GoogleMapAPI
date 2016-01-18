@@ -9,6 +9,7 @@
 namespace Oli\GoogleAPI;
 
 
+use Nette\InvalidArgumentException;
 use Tester\TestCase;
 use Tester\Assert;
 
@@ -121,30 +122,30 @@ class MarkersTest extends TestCase
 		}, \InvalidArgumentException::class);
 
 		Assert::equal([
-				[
-						'position' => [11, 12],
-						'title' => NULL,
-						'animation' => FALSE,
-						'visible' => TRUE,
-				],
-				[
-						'position' => [21, 22],
-						'title' => NULL,
-						'animation' => 'BOUNCE',
-						'visible' => TRUE,
-				],
-				[
-						'position' => [31, 32],
-						'title' => NULL,
-						'animation' => 'DROP',
-						'visible' => TRUE,
-				],
-				[
-						'position' => [41, 42],
-						'title' => 'foo',
-						'animation' => FALSE,
-						'visible' => TRUE,
-				],
+			[
+				'position' => [11, 12],
+				'title' => NULL,
+				'animation' => FALSE,
+				'visible' => TRUE,
+			],
+			[
+				'position' => [21, 22],
+				'title' => NULL,
+				'animation' => 'BOUNCE',
+				'visible' => TRUE,
+			],
+			[
+				'position' => [31, 32],
+				'title' => NULL,
+				'animation' => 'DROP',
+				'visible' => TRUE,
+			],
+			[
+				'position' => [41, 42],
+				'title' => 'foo',
+				'animation' => FALSE,
+				'visible' => TRUE,
+			],
 		], $this->markers->getMarkers());
 
 		$this->markers->deleteMarkers();
@@ -158,6 +159,74 @@ class MarkersTest extends TestCase
 		Assert::exception(function () {
 			$this->markers->setMessage('foo');
 		}, \InvalidArgumentException::class, 'setMessage must be called after addMarker()');
+
+		Assert::false($this->markers->getMarker());
+
+		$this->markers->addMarker([11, 12]);
+		$this->markers->setMessage('foo');
+		Assert::same([
+			'position' => [11, 12],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => TRUE,
+			'message' => 'foo',
+			'autoOpen' => FALSE,
+		], $this->markers->getMarker());
+
+		$this->markers->addMarker([21, 22], Markers::BOUNCE)
+			->setMessage('bar', TRUE);
+		Assert::same([
+			'position' => [21, 22],
+			'title' => NULL,
+			'animation' => 'BOUNCE',
+			'visible' => TRUE,
+			'message' => 'bar',
+			'autoOpen' => TRUE
+		], $this->markers->getMarker());
+
+		$this->markers->addMarker([31, 32], Markers::DROP)
+			->setMessage('foo-bar', FALSE);
+		Assert::same([
+			'position' => [31, 32],
+			'title' => NULL,
+			'animation' => 'DROP',
+			'visible' => TRUE,
+			'message' => 'foo-bar',
+			'autoOpen' => FALSE
+		], $this->markers->getMarker());
+	}
+
+
+	public function testSetClusterOptions()
+	{
+		$marker = $this->markers->addMarker([11, 12]);
+		Assert::same([], $this->markers->getClusterOptions());
+
+		$marker->setClusterOptions([1, 2, 'foo']);
+		Assert::same([1, 2, 'foo'], $this->markers->getClusterOptions());
+	}
+
+
+	public function testSetColor()
+	{
+		Assert::exception(function () {
+			$this->markers->setColor('foo');
+		}, InvalidArgumentException::class, 'Color must be 24-bit color or from the allowed list.');
+
+		Assert::exception(function () {
+			$this->markers->setColor('green');
+		}, \InvalidArgumentException::class, 'setColor must be called after addMarker()');
+
+		$this->markers->addMarker([11, 12])
+			->setColor('purple');
+		Assert::same([
+			'position' => [11, 12],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => TRUE,
+			'color' => 'purple',
+		], $this->markers->getMarker());
+
 	}
 
 }
