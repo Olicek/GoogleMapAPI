@@ -138,7 +138,7 @@ config.neon
 		width: 750px
 		height: 450px
 	markers:
-		defaultIconPath: images/mapPoints
+		iconDefaultPath: images/mapPoints
 
 Presenter
 ``` php
@@ -163,10 +163,10 @@ protected function createComponentGoogleMap()
 		$addedMarker = $markers->addMarker(array($marker->lat, $marker->lng), Markers::DROP)
 			->setMessage(
 				'<h1>'.$marker->title.'</h1><br />'.$marker->description
-			)->setIcon($marker->icon)->getMarker();
+			)->setIcon($marker->icon);
 		
 		// $marker->waypoint can be start, end, waypoints
-		$map->setWaypoint($marker->waypoint, $addedMarker);
+		$map->setWaypoint($marker->waypoint, $addedMarker->getMarker());
 	}
 	
 	$map->setDirection([
