@@ -8,38 +8,49 @@
 
 namespace Oli\GoogleAPI;
 
-use Nette\InvalidArgumentException;
+use Nette\Object;
+use Nette\Utils\Strings;
+use Oli\GoogleAPI\Marker\Icon;
 
 
 /**
- * Description of Markers
- *
- * @author Petr Olišar <petr.olisar@gmail.com>
+ * Class Markers
+ * @package Oli\GoogleAPI
+ * @see https://developers.google.com/maps/documentation/javascript/markers#complex_icons
  */
-class Markers extends \Nette\Object
+class Markers extends Object
 {
 
 	const DROP = 'DROP', BOUNCE = 'BOUNCE';
-	
-	/** @var array */
+
+	/**
+	 * @var array
+	 */
 	private $markers = array();
 
-	/** @var String */
+	/**
+	 * @var
+	 */
 	private $iconDefaultPath;
 
-	/** @var Boolean */
+	/**
+	 * @var bool
+	 */
 	private $bound = FALSE;
 
-	/** @var Boolean */
+	/**
+	 * @var bool
+	 */
 	private $markerClusterer = FALSE;
 
+	/**
+	 * @var array
+	 */
 	private $clusterOptions = array();
 
-	
+
 	/**
-	 * @internal
 	 * @param array $markers
-	 * @throws \Nette\InvalidArgumentException
 	 */
 	public function addMarkers(array $markers)
 	{
@@ -51,24 +62,24 @@ class Markers extends \Nette\Object
 			}
 		}
 	}
-	
-	
+
+
 	/**
-	* @param array $position
-	* @param boolean $animation
-	* @param String $title
-	* @return Markers
-	*/
+	 * @param array $position
+	 * @param bool $animation
+	 * @param null|string $title
+	 * @return $this
+	 */
 	public function addMarker(array $position, $animation = false, $title = null)
 	{
 		if (!is_string($animation) && !is_bool($animation))
 		{
-			throw new \InvalidArgumentException("Animation must be string or boolean, $animation (" .
+			throw new InvalidArgumentException("Animation must be string or boolean, $animation (" .
 					gettype($animation) . ") was given");
 		}
 		if (!is_string($title) && $title != null)
 		{
-			throw new \InvalidArgumentException("Title must be string or null, $title (".gettype($title).") was given");
+			throw new InvalidArgumentException("Title must be string or null, $title (".gettype($title).") was given");
 		}
 		$this->markers[] = array(
 			'position' => $position,
@@ -78,13 +89,17 @@ class Markers extends \Nette\Object
 		);
 		return $this;
 	}
-	
-	
+
+
+	/**
+	 * @return array
+	 */
 	public function getMarker()
 	{
 		return end($this->markers);
 	}
-	
+
+
 	/**
 	 * @return array
 	 */
@@ -92,24 +107,25 @@ class Markers extends \Nette\Object
 	{
 		return $this->markers;
 	}
-	
-	
+
+
 	public function deleteMarkers()
 	{
 		$this->markers = array();
 	}
-	
-	
+
+
 	/**
-	 * @param String $message
-	 * @param Boolean $autoOpen
-	 * @return Markers
+	 * @param $message
+	 * @param bool $autoOpen
+	 * @return $this
+	 * @throws LogicException
 	 */
 	public function setMessage($message, $autoOpen = false)
 	{
 		if (!count($this->markers))
 		{
-			throw new \InvalidArgumentException("setMessage must be called after addMarker()");
+			throw new LogicException("setMessage must be called after addMarker()");
 		}
 		end($this->markers);         // move the internal pointer to the end of the array
 		$key = key($this->markers);
@@ -117,29 +133,27 @@ class Markers extends \Nette\Object
 		$this->markers[$key]['autoOpen'] = $autoOpen;
 		return $this;
 	}
-	
-	
+
+
 	/**
-	 *
-	 * @param Boolean $cluster
-	 * @return \Oli\GoogleAPI\Markers
-	 * @throws \InvalidArgumentException
+	 * @param bool $cluster
+	 * @return $this
+	 * @throws InvalidArgumentException
 	 */
 	public function isMarkerClusterer($cluster = true)
 	{
 		if (!is_bool($cluster))
 		{
-			throw new \InvalidArgumentException("cluster must be boolean, $cluster (".gettype($cluster).") was given");
+			throw new InvalidArgumentException("cluster must be boolean, $cluster (".gettype($cluster).") was given");
 		}
 		
 		$this->markerClusterer = $cluster;
 		return $this;
 	}
-	
-	
+
+
 	/**
-	 *
-	 * @return Boolean
+	 * @return bool
 	 */
 	public function getMarkerClusterer()
 	{
@@ -149,7 +163,7 @@ class Markers extends \Nette\Object
 
 	/**
 	 * @param array $options
-	 * @return \Oli\GoogleAPI\Markers
+	 * @return $this
 	 */
 	public function setClusterOptions($options = array())
 	{
@@ -165,16 +179,18 @@ class Markers extends \Nette\Object
 	{
 		return $this->clusterOptions;
 	}
-	
+
+
 	/**
-	 * @param Boolean $bound Show all of markers
-	 * @return \Oli\GoogleAPI\MapAPI
+	 * @param bool $bound Show all of markers
+	 * @return $this
+	 * @throws InvalidArgumentException
 	 */
 	public function fitBounds($bound = true)
 	{
 		if (!is_bool($bound))
 		{
-			throw new \InvalidArgumentException("fitBounds must be boolean, $bound (".gettype($bound).") was given");
+			throw new InvalidArgumentException("fitBounds must be boolean, $bound (".gettype($bound).") was given");
 		}
 
 		$this->bound = $bound;
@@ -183,21 +199,25 @@ class Markers extends \Nette\Object
 	
 	
 	/**
-	 *
 	 * @return Boolean
 	 */
 	public function getBound()
 	{
 		return $this->bound;
 	}
-	
-	
+
+
 	/**
-	 *
-	 * @param Marker\Icon | String $icon
+	 * @param string|Icon $icon
+	 * @return $this
+	 * @throws LogicException
 	 */
 	public function setIcon($icon)
 	{
+		if (!count($this->markers))
+		{
+			throw new LogicException("setIcon must be called after addMarker()");
+		}
 		end($this->markers);         // move the internal pointer to the end of the array
 		$key = key($this->markers);
 		if($icon instanceof Marker\Icon)
@@ -212,18 +232,17 @@ class Markers extends \Nette\Object
 
 		return $this;
 	}
-	
-	
+
+
 	/**
-	 *
-	 * @param String $defaultPath
-	 * @return \Oli\GoogleAPI\Markers
+	 * @param string $defaultPath
+	 * @return $this
 	 */
 	public function setDefaultIconPath($defaultPath)
 	{
 		if(!is_null($defaultPath) &&
-			!\Nette\Utils\Strings::endsWith($defaultPath, '/') &&
-			!\Nette\Utils\Strings::endsWith($defaultPath, '\\'))
+			!Strings::endsWith($defaultPath, '/') &&
+			!Strings::endsWith($defaultPath, '\\'))
 		{
 			$defaultPath .= DIRECTORY_SEPARATOR;
 		}
@@ -232,26 +251,25 @@ class Markers extends \Nette\Object
 	}
 
 
+	/**
+	 * @return string
+	 */
 	public function getDefaultIconPath()
 	{
 		return $this->iconDefaultPath;
 	}
-	
-	
+
+
 	/**
-	 *
-	 * @param String $color Color can be 24-bit color or: green, purple, yellow, blue, gray, orange, red
-	 * @return \Oli\GoogleAPI\Markers
+	 * @param string $color Color can be 24-bit color or: green, purple, yellow, blue, orange, red
+	 * @return $this
 	 */
 	public function setColor($color)
 	{
 		$allowed = array('green', 'purple', 'yellow', 'blue', 'orange', 'red');
-		if (!in_array($color, $allowed))
+		if (!in_array($color, $allowed) && !Strings::match($color, '~^0x[a-f0-9]{6}$~i'))
 		{
-			if (!\Nette\Utils\Strings::match($color, '~^0x[a-f0-9]{6}$~i'))
-			{
-				throw new \Nette\InvalidArgumentException('Color must be 24-bit color or from the allowed list.');
-			}
+			throw new InvalidArgumentException('Color must be 24-bit color or from the allowed list.');
 		}
 
 		if (!count($this->markers))
@@ -265,11 +283,14 @@ class Markers extends \Nette\Object
 	}
 
 
+	/**
+	 * @param array $marker
+	 */
 	private function createMarker(array $marker)
 	{
 		if(!array_key_exists('coordinates', $marker))
 		{
-			throw new \Nette\InvalidArgumentException('Coordinates must be set in every marker');
+			throw new InvalidArgumentException('Coordinates must be set in every marker');
 		}
 
 		$this->addMarker(array_values($marker['coordinates']),

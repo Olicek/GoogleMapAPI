@@ -9,7 +9,7 @@
 namespace Oli\GoogleAPI;
 
 
-use Nette\InvalidArgumentException;
+use Oli\GoogleAPI\Marker\Icon;
 use Tester\TestCase;
 use Tester\Assert;
 
@@ -46,7 +46,7 @@ class MarkersTest extends TestCase
 
 		Assert::exception(function () {
 			$this->markers->isMarkerClusterer('foo');
-		}, \InvalidArgumentException::class, 'cluster must be boolean, foo (string) was given');
+		}, InvalidArgumentException::class, 'cluster must be boolean, foo (string) was given');
 	}
 
 
@@ -75,7 +75,7 @@ class MarkersTest extends TestCase
 
 		Assert::exception(function () {
 			$this->markers->fitBounds('foo');
-		}, \InvalidArgumentException::class, 'fitBounds must be boolean, foo (string) was given');
+		}, InvalidArgumentException::class, 'fitBounds must be boolean, foo (string) was given');
 	}
 
 
@@ -115,11 +115,11 @@ class MarkersTest extends TestCase
 
 		Assert::exception(function () {
 			$this->markers->addMarker([], 123);
-		}, \InvalidArgumentException::class);
+		}, InvalidArgumentException::class);
 
 		Assert::exception(function () {
 			$this->markers->addMarker([], FALSE, 123);
-		}, \InvalidArgumentException::class);
+		}, InvalidArgumentException::class);
 
 		Assert::equal([
 			[
@@ -158,7 +158,7 @@ class MarkersTest extends TestCase
 	{
 		Assert::exception(function () {
 			$this->markers->setMessage('foo');
-		}, \InvalidArgumentException::class, 'setMessage must be called after addMarker()');
+		}, LogicException::class, 'setMessage must be called after addMarker()');
 
 		Assert::false($this->markers->getMarker());
 
@@ -215,7 +215,7 @@ class MarkersTest extends TestCase
 
 		Assert::exception(function () {
 			$this->markers->setColor('green');
-		}, \InvalidArgumentException::class, 'setColor must be called after addMarker()');
+		}, InvalidArgumentException::class, 'setColor must be called after addMarker()');
 
 		$this->markers->addMarker([11, 12])
 			->setColor('purple');
@@ -226,7 +226,70 @@ class MarkersTest extends TestCase
 			'visible' => TRUE,
 			'color' => 'purple',
 		], $this->markers->getMarker());
+	}
 
+
+	public function testSetIcon()
+	{
+		Assert::exception(function () {
+			$this->markers->setIcon('foo');
+		}, LogicException::class, 'setIcon must be called after addMarker()');
+
+		$this->markers->addMarker([11, 12])
+			->setIcon('icon.png');
+		Assert::same([
+			'position' => [11, 12],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => TRUE,
+			'icon' => 'icon.png',
+		], $this->markers->getMarker());
+
+		$this->markers->setDefaultIconPath('default/path');
+
+		$this->markers->addMarker([21, 22])
+			->setIcon('icon.png');
+		Assert::same([
+			'position' => [21, 22],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => TRUE,
+			'icon' => 'default/path/icon.png',
+		], $this->markers->getMarker());
+
+		$icon = new Icon('icon.png');
+		$this->markers->addMarker([31, 32])
+			->setIcon($icon);
+		Assert::same([
+			'position' => [31, 32],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => TRUE,
+			'icon' => [
+				'url' => 'default/path/icon.png',
+				'size' => NULL,
+				'origin' => NULL,
+				'anchor' => NULL
+			],
+		], $this->markers->getMarker());
+
+		$this->markers->setDefaultIconPath(NULL);
+
+		$icon = (new Icon('icon.png'))->setSize([20, 20]);
+		$this->markers->addMarker([31, 32])
+			->setIcon($icon);
+		Assert::same([
+			'position' => [31, 32],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => TRUE,
+			'icon' => [
+				'url' => 'icon.png',
+				'size' => [20, 20],
+				'origin' => NULL,
+				'anchor' => NULL
+			],
+		], $this->markers->getMarker());
 	}
 
 }

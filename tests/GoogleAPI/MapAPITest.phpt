@@ -80,15 +80,15 @@ class MapAPITest extends TestCase
 
 		Assert::exception(function () {
 			$this->map->setZoom(-1);
-		}, \LogicException::class);
+		}, LogicException::class);
 
 		Assert::exception(function () {
 			$this->map->setZoom(20);
-		}, \LogicException::class);
+		}, LogicException::class);
 
 		Assert::exception(function () {
 			$this->map->setZoom('foo');
-		}, \InvalidArgumentException::class, 'type must be integer, foo (string) was given');
+		}, InvalidArgumentException::class, 'type must be integer, foo (string) was given');
 	}
 
 
@@ -108,7 +108,7 @@ class MapAPITest extends TestCase
 
 		Assert::exception(function () {
 			$this->map->setType('foo');
-		}, \InvalidArgumentException::class);
+		}, InvalidArgumentException::class);
 	}
 
 
@@ -126,7 +126,7 @@ class MapAPITest extends TestCase
 
 		Assert::exception(function () {
 			$this->map->isStaticMap('foo');
-		}, \InvalidArgumentException::class, 'staticMap must be boolean, foo (string) was given');
+		}, InvalidArgumentException::class, 'staticMap must be boolean, foo (string) was given');
 	}
 
 
@@ -134,7 +134,7 @@ class MapAPITest extends TestCase
 	{
 		Assert::exception(function () {
 			$this->map->isStaticMap(FALSE)->isClickable();
-		}, \InvalidArgumentException::class, "the 'clickable' option only applies to static maps");
+		}, InvalidArgumentException::class, "the 'clickable' option only applies to static map");
 
 		$this->map->isStaticMap();
 		Assert::false($this->map->getIsClicable());
@@ -151,7 +151,7 @@ class MapAPITest extends TestCase
 
 		Assert::exception(function () {
 			$this->map->isClickable('foo');
-		}, \InvalidArgumentException::class, 'clickable must be boolean, foo (string) was given');
+		}, InvalidArgumentException::class, 'clickable must be boolean, foo (string) was given');
 	}
 
 
@@ -170,7 +170,150 @@ class MapAPITest extends TestCase
 
 		Assert::exception(function () {
 			$this->map->isScrollable('foo');
-		}, \InvalidArgumentException::class, 'staticMap must be boolean, foo (string) was given');
+		}, InvalidArgumentException::class, 'staticMap must be boolean, foo (string) was given');
+	}
+
+
+	public function testDirection()
+	{
+	    Assert::same(['travelmode' => 'DRIVING'], $this->map->getDirection());
+
+		$this->map->setDirection([
+			'travelmode' => MapAPI::BICYCLING,
+			'avoidHighways' => TRUE,
+			'avoidTolls' => TRUE
+		]);
+		Assert::same([
+			'travelmode' => 'BICYCLING',
+			'avoidHighways' => TRUE,
+			'avoidTolls' => TRUE
+		], $this->map->getDirection());
+
+		$this->map->setDirection([
+			'avoidHighways' => TRUE,
+			'avoidTolls' => TRUE
+		]);
+		Assert::same([
+			'avoidHighways' => TRUE,
+			'avoidTolls' => TRUE,
+			'travelmode' => 'DRIVING'
+		], $this->map->getDirection());
+
+		Assert::exception(function () {
+			$this->map->setDirection([
+				'travelmode' => 'FOO',
+				'avoidHighways' => TRUE,
+				'avoidTolls' => TRUE
+			]);
+		}, InvalidArgumentException::class);
+	}
+
+
+	public function testWaypoints()
+	{
+	    $this->map->setWaypoint('start', [
+			'position' => [11, 12],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => TRUE
+		]);
+		Assert::same(['start' => [
+			'position' => [11, 12],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => TRUE
+		]], $this->map->getWaypoints());
+
+		$this->map->setWaypoint('waypoint', [
+			'position' => [11, 12],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => FALSE
+		]);
+		Assert::same([
+			'start' => [
+				'position' => [11, 12],
+				'title' => NULL,
+				'animation' => FALSE,
+				'visible' => TRUE
+			],
+			'waypoints' => [
+				[
+					'position' => [11, 12],
+					'title' => NULL,
+					'animation' => FALSE,
+					'visible' => FALSE
+				]
+			],
+		], $this->map->getWaypoints());
+
+		$this->map->setWaypoint('waypoint', [
+			'position' => [10, 10],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => FALSE
+		]);
+		Assert::same([
+			'start' => [
+				'position' => [11, 12],
+				'title' => NULL,
+				'animation' => FALSE,
+				'visible' => TRUE
+			],
+			'waypoints' => [
+				[
+					'position' => [11, 12],
+					'title' => NULL,
+					'animation' => FALSE,
+					'visible' => FALSE
+				],
+				[
+					'position' => [10, 10],
+					'title' => NULL,
+					'animation' => FALSE,
+					'visible' => FALSE
+				]
+			],
+		], $this->map->getWaypoints());
+
+		$this->map->setWaypoint('end', [
+			'position' => [20, 20],
+			'title' => NULL,
+			'animation' => FALSE,
+			'visible' => FALSE
+		]);
+		Assert::same([
+			'start' => [
+				'position' => [11, 12],
+				'title' => NULL,
+				'animation' => FALSE,
+				'visible' => TRUE
+			],
+			'waypoints' => [
+				[
+					'position' => [11, 12],
+					'title' => NULL,
+					'animation' => FALSE,
+					'visible' => FALSE
+				],
+				[
+					'position' => [10, 10],
+					'title' => NULL,
+					'animation' => FALSE,
+					'visible' => FALSE
+				]
+			],
+			'end' => [
+				'position' => [20, 20],
+				'title' => NULL,
+				'animation' => FALSE,
+				'visible' => FALSE
+			]
+		], $this->map->getWaypoints());
+
+		Assert::exception(function () {
+			$this->map->setWaypoint('foo', ['position' => [20, 20]]);
+		}, InvalidArgumentException::class);
 	}
 
 }

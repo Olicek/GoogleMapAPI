@@ -10,66 +10,93 @@ namespace Oli\GoogleAPI;
 
 use Nette\Application\UI\Control;
 use Nette\Application\Responses\JsonResponse;
+use Nette\Application\UI\ITemplate;
+use Nette\Utils\Json;
 
 
 /**
  * Description of GoogleAPI
  *
  * @author Petr Olišar <petr.olisar@gmail.com>
+ * @property-read ITemplate $template
  */
 class MapAPI extends Control
 {
 
 	const ROADMAP = 'ROADMAP', SATELLITE = 'SATELLITE', HYBRID = 'HYBRID', TERRAIN = 'TERRAIN',
 		BICYCLING = 'BICYCLING', DRIVING = 'DRIVING', TRANSIT = 'TRANSIT', WALKING = 'WALKING';
-	
-	/** @var double|string */
+
+	/**
+	 * @var double|string
+	 */
 	private $width;
 
-	/** @var double|string */
+	/**
+	 * @var double|string
+	 */
 	private $height;
 
-	/** @var array */
+	/**
+	 * @var array
+	 */
 	private $coordinates;
 
-	/** @var Integer */
+	/**
+	 * @var int
+	 */
 	private $zoom;
 
-	/** @var String */
+	/**
+	 * @var string
+	 */
 	private $type;
 
-	/** @var Boolean */
+	/**
+	 * @var bool
+	 */
 	private $staticMap = FALSE;
 
-	/** @var Boolean */
+	/**
+	 * @var bool
+	 */
 	private $clickable = FALSE;
 
-	/** @var String  */
+	/**
+	 * @var string
+	 */
 	private $key;
 
-	/** @var array */
+	/**
+	 * @var array
+	 */
 	private $markers = array();
 
-	/** @var boolean */
+	/**
+	 * @var bool
+	 */
 	private $bound;
 
-	/** @var boolean */
+	/**
+	 * @var bool
+	 */
 	private $markerClusterer;
 
-	/** @var array */
+	/**
+	 * @var array
+	 */
 	private $clusterOptions;
 
-	/** @var boolean */
+	/**
+	 * @var bool
+	 */
 	private $scrollable = FALSE;
 
 	/**
-	 *
 	 * @var array
 	 */
 	private $waypoints;
 
 	/**
-	 *
 	 * @var array
 	 */
 	private $direction = ['travelmode' => 'DRIVING'];
@@ -77,12 +104,13 @@ class MapAPI extends Control
 
 	public function __construct()
 	{
-		parent::__construct();
+
 	}
 
+
 	/**
-	 * @internal
 	 * @param array $config
+	 * @internal
 	 */
 	public function setup(array $config)
 	{
@@ -90,11 +118,10 @@ class MapAPI extends Control
 		$this->height = $config['height'];
 	}
 
-	
+
 	/**
-	 *
-	 * @param array $coordinates (latitude, longitude) - center of the map
-	 * @return \Oli\GoogleAPI\MapAPI
+	 * @param array $coordinates	(latitude, longitude) - center of the map
+	 * @return $this
 	 */
 	public function setCoordinates(array $coordinates)
 	{
@@ -108,12 +135,12 @@ class MapAPI extends Control
 		
 		return $this;
 	}
-	
-	
+
+
 	/**
 	 * @param double|string $width
 	 * @param double|string $height
-	 * @return MapAPI
+	 * @return $this
 	 */
 	public function setProportions($width, $height)
 	{
@@ -121,115 +148,134 @@ class MapAPI extends Control
 		$this->height = $height;
 		return $this;
 	}
-	
-	
+
+
 	/**
-	 *
 	 * @param string $key
-	 * @return \Oli\GoogleAPI\MapAPI
+	 * @return $this
 	 */
 	public function setKey($key)
 	{
 		$this->key = $key;
 		return $this;
 	}
-	
-	
+
+
 	/**
-	 *
-	 * @param int $zoom <0, 19>
-	 * @return \Oli\GoogleAPI\MapAPI
-	 * @throws \InvalidArgumentException
-	 * @throws \LogicException
+	 * @param int $zoom		<0, 19>
+	 * @return $this
+	 * @throws InvalidArgumentException
+	 * @throws LogicException
 	 */
 	public function setZoom($zoom)
 	{
 		if (!is_int($zoom))
 		{
-			throw new \InvalidArgumentException("type must be integer, $zoom (".gettype($zoom).") was given");
+			throw new InvalidArgumentException("type must be integer, $zoom (".gettype($zoom).") was given");
 		}
-		
+
 		if ($zoom < 0 || $zoom > 19)
 		{
-			throw new \LogicException('Zoom must be betwen <0, 19>.');
+			throw new LogicException('Zoom must be betwen <0, 19>.');
 		}
-		
+
 		$this->zoom = (int) $zoom;
 		return $this;
 	}
-	
-	
+
+
 	/**
-	 *
-	 * @param String $type
-	 * @return \Oli\GoogleAPI\MapAPI
+	 * @param string $type
+	 * @return $this
+	 * @throws InvalidArgumentException
 	 */
 	public function setType($type)
 	{
 		if($type !== self::HYBRID && $type !== self::ROADMAP && $type !== self::SATELLITE &&
 				$type !== self::TERRAIN)
 		{
-			throw new \InvalidArgumentException;
+			throw new InvalidArgumentException;
 		}
 		$this->type = $type;
 		return $this;
 	}
-	
-	
-	public function setWaypoint($key, $waypoint)
+
+
+	/**
+	 * @param string $key
+	 * @param array $waypoint
+	 * @return $this
+	 * @throws InvalidArgumentException
+	 */
+	public function setWaypoint($key, array $waypoint)
 	{
-		if($key === 'waypoints')
+		if (!in_array($key, ['start', 'end', 'waypoint']))
+		{
+			throw new InvalidArgumentException;
+		}
+
+		if($key === 'waypoint')
 		{
 			$this->waypoints['waypoints'][] = $waypoint;
-			
+
 		} else
 		{
 			$this->waypoints[$key] = $waypoint;
 		}
 		return $this;
 	}
-	
-	
+
+
+	/**
+	 * @param array $direction
+	 * @return $this
+	 * @throws InvalidArgumentException
+	 */
 	public function setDirection(array $direction)
 	{
 		$this->direction = $direction;
 		if(!array_key_exists('travelmode', $this->direction))
 		{
 			$this->direction['travelmode'] = 'DRIVING';
+		} else if (!in_array($direction['travelmode'], [
+			self::BICYCLING, self::DRIVING, self::WALKING, self::TRANSIT
+		]))
+		{
+			throw new InvalidArgumentException;
 		}
 		return $this;
 	}
-	
-	
+
+
 	/**
-	 * @return array Width and Height of the map.
+	 * @return array	Width and Height of the map.
 	 */
 	public function getProportions()
 	{
 		return array('width' => $this->width, 'height' => $this->height);
 	}
-	
-	
+
+
 	/**
-	 * @return array Center of the map
+	 * @return array	Center of the map
 	 */
 	public function getCoordinates()
 	{
 		return $this->coordinates;
 	}
-	
-	
+
+
 	/**
-	 * @return integer Zoom
+	 * @return int
 	 */
 	public function getZoom()
 	{
 		return $this->zoom;
 	}
-	
-	
+
+
 	/**
-	 * @return String Which map type will be show
+	 * @return string	Which map type will be show
 	 */
 	public function getType()
 	{
@@ -237,30 +283,53 @@ class MapAPI extends Control
 	}
 
 
+	/**
+	 * @return array
+	 */
+	public function getWaypoints()
+	{
+		return $this->waypoints;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getDirection()
+	{
+	    return $this->direction;
+	}
+
+
+	/**
+	 * @return string
+	 */
 	public function getKey()
 	{
 		return $this->key;
 	}
-	
-	
+
+
 	/**
-	 *
-	 * @param Boolean $staticMap
-	 * @return \Oli\GoogleAPI\MapAPI
-	 * @throws \InvalidArgumentException
+	 * @param bool $staticMap
+	 * @return $this
+	 * @throws InvalidArgumentException
 	 */
 	public function isStaticMap($staticMap = TRUE)
 	{
 		if (!is_bool($staticMap))
 		{
-			throw new \InvalidArgumentException("staticMap must be boolean, $staticMap (".gettype($staticMap).") was given");
+			throw new InvalidArgumentException("staticMap must be boolean, $staticMap (".gettype($staticMap).") was given");
 		}
-		
+
 		$this->staticMap = $staticMap;
 		return $this;
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function getIsStaticMap()
 	{
 		return $this->staticMap;
@@ -268,21 +337,20 @@ class MapAPI extends Control
 
 
 	/**
-	 *
-	 * @param Boolean $clickable
-	 * @return \Oli\GoogleAPI\MapAPI
-	 * @throws \InvalidArgumentException
+	 * @param bool $clickable
+	 * @return $this
+	 * @throws InvalidArgumentException
 	 */
 	public function isClickable($clickable = TRUE)
 	{
 		if (!$this->staticMap)
 		{
-			throw new \InvalidArgumentException("the 'clickable' option only applies to static maps");
+			throw new InvalidArgumentException("the 'clickable' option only applies to static map");
 		}
 
 		if (!is_bool($clickable))
 		{
-			throw new \InvalidArgumentException("clickable must be boolean, $clickable (".gettype($clickable).") was given");
+			throw new InvalidArgumentException("clickable must be boolean, $clickable (".gettype($clickable).") was given");
 		}
 
 		$this->clickable = $clickable;
@@ -290,17 +358,25 @@ class MapAPI extends Control
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function getIsClicable()
 	{
 		return $this->clickable;
 	}
 
-	
+
+	/**
+	 * @param bool $scrollable
+	 * @return $this
+	 * @throws InvalidArgumentException
+	 */
 	public function isScrollable($scrollable = TRUE)
 	{
 		if (!is_bool($scrollable))
 		{
-			throw new \InvalidArgumentException("staticMap must be boolean, $scrollable (".gettype($scrollable).") was given");
+			throw new InvalidArgumentException("staticMap must be boolean, $scrollable (".gettype($scrollable).") was given");
 		}
 		
 		$this->scrollable = $scrollable;
@@ -308,6 +384,9 @@ class MapAPI extends Control
 	}
 
 
+	/**
+	 * @return bool
+	 */
 	public function getIsScrollable()
 	{
 		return $this->scrollable;
@@ -315,9 +394,8 @@ class MapAPI extends Control
 
 
 	/**
-	 *
-	 * @param \Oli\GoogleAPI\Markers $markers
-	 * @return \Oli\GoogleAPI\MapAPI
+	 * @param Markers $markers
+	 * @return $this
 	 */
 	public function addMarkers(Markers $markers)
 	{
@@ -327,8 +405,8 @@ class MapAPI extends Control
 		$this->clusterOptions = $markers->getClusterOptions();
 		return $this;
 	}
-	
-	
+
+
 	/**
 	 * Alias to handleMarkers()
 	 */
@@ -336,11 +414,11 @@ class MapAPI extends Control
 	{
 		$this->handleMarkers();
 	}
-	
-	
+
+
 	/**
-	* @see Nette\Application\Control#render()
-	*/
+	 * @throws \Nette\Utils\JsonException
+	 */
 	public function render()
 	{
 		if ($this->staticMap)
@@ -367,13 +445,13 @@ class MapAPI extends Control
 			    'clusterOptions' => $this->clusterOptions,
 			    'waypoint' => !is_null($this->waypoints) ? array_merge($this->waypoints, $this->direction) : NULL
 			);
-			$this->template->map = \Nette\Utils\Json::encode($map);
+			$this->template->map = Json::encode($map);
 			$this->template->setFile(dirname(__FILE__) . '/template.latte');
 		}
 		$this->template->render();
 	}
-	
-	
+
+
 	/**
 	 * Send markers to template as JSON
 	 * @internal
