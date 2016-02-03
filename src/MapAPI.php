@@ -211,7 +211,7 @@ class MapAPI extends Control
 	{
 		if (!in_array($key, ['start', 'end', 'waypoint']))
 		{
-			throw new InvalidArgumentException;
+			throw new InvalidArgumentException('First argument must be "start|end|waypoint", ' . $key . ' was given');
 		}
 
 		if($key === 'waypoint')

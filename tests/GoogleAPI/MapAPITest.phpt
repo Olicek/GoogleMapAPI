@@ -313,7 +313,7 @@ class MapAPITest extends TestCase
 
 		Assert::exception(function () {
 			$this->map->setWaypoint('foo', ['position' => [20, 20]]);
-		}, InvalidArgumentException::class);
+		}, InvalidArgumentException::class, 'First argument must be "start|end|waypoint", foo was given');
 	}
 
 }
