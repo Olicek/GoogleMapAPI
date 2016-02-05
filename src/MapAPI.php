@@ -11,6 +11,7 @@ namespace Oli\GoogleAPI;
 use Nette\Application\UI\Control;
 use Nette\Application\Responses\JsonResponse;
 use Nette\Application\UI\ITemplate;
+use Nette\Utils\Html;
 use Nette\Utils\Json;
 
 
@@ -57,7 +58,7 @@ class MapAPI extends Control
 	private $staticMap = FALSE;
 
 	/**
-	 * @var bool
+	 * @var bool|string|callable
 	 */
 	private $clickable = FALSE;
 
@@ -337,7 +338,7 @@ class MapAPI extends Control
 
 
 	/**
-	 * @param bool $clickable
+	 * @param bool|callable $clickable
 	 * @return $this
 	 * @throws InvalidArgumentException
 	 */
@@ -348,12 +349,22 @@ class MapAPI extends Control
 			throw new InvalidArgumentException("the 'clickable' option only applies to static map");
 		}
 
-		if (!is_bool($clickable))
+		if (!is_bool($clickable) && !is_callable($clickable))
 		{
-			throw new InvalidArgumentException("clickable must be boolean, $clickable (".gettype($clickable).") was given");
+			throw new InvalidArgumentException(
+				"clickable must be boolean or callable, $clickable (".gettype($clickable).") was given"
+			);
 		}
 
-		$this->clickable = $clickable;
+		if (is_callable($clickable)) {
+			$this->clickable = $clickable;
+
+		} else if ($clickable !== FALSE)
+		{
+			$this->clickable = '<a href="https://maps.google.com/maps/place/' .
+				$this->coordinates[0] . ',' . $this->coordinates[1] . '/">';
+		}
+
 		return $this;
 	}
 
@@ -423,12 +434,22 @@ class MapAPI extends Control
 	{
 		if ($this->staticMap)
 		{
+			if (is_callable($this->clickable))
+			{
+				$this->clickable = call_user_func_array($this->clickable, [
+					'https://maps.google.com/maps/place/' . $this->coordinates[0] . ',' .
+					$this->coordinates[1] . '/',
+					$this->getCoordinates()
+				]);
+			}
+
 			$this->template->height = $this->height;
 			$this->template->width = $this->width;
 			$this->template->zoom = $this->zoom;
 			$this->template->position = $this->coordinates;
 			$this->template->markers = $this->markers;
-			$this->template->clickable = $this->clickable;
+			$this->template->clickable = $this->clickable instanceof Html ? $this->clickable->startTag() :
+				$this->clickable;
 			$this->template->setFile(dirname(__FILE__) . '/static.latte');
 		} else
 		{

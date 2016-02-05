@@ -49,6 +49,18 @@ This method creates map as a picture. When the map is static, only `height`, `wi
 
 If scrollable is `TRUE`, when mouse is over the map and a user is scrolling, it has no effect.
 
+### isClickable($clickable = TRUE)
+
+Clickable can be boolean or callable. If clickable is boolean it generates link like this:
+`<a href="https://maps.google.com/maps/place/50.250718,14.583435/">`. If clickable is callable
+it must return \Nette\Utils\Html. Callable accept 2 parameters. `$url` and `$coordinates`.
+
+```
+isClickable(function ($url, $coordinates) {
+	return Nette\Utils\Html::el('a', ['class' => 'foo'])->href($url);
+})
+```
+
 ### addMarkers(Markers $markers)
 
 This method must be called, if you want to put the markers to the map. It just transmit markers from `$markers` to the map.

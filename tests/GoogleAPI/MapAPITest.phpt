@@ -9,6 +9,7 @@
 namespace Oli\GoogleAPI;
 
 
+use Nette\Utils\Html;
 use Tester\TestCase;
 use Tester\Assert;
 
@@ -136,7 +137,7 @@ class MapAPITest extends TestCase
 			$this->map->isStaticMap(FALSE)->isClickable();
 		}, InvalidArgumentException::class, "the 'clickable' option only applies to static map");
 
-		$this->map->isStaticMap();
+		$this->map->setCoordinates(array(50.250718,14.583435))->isStaticMap();
 		Assert::false($this->map->getIsClicable());
 
 
@@ -144,14 +145,23 @@ class MapAPITest extends TestCase
 		Assert::false($this->map->getIsClicable());
 
 		$this->map->isClickable();
-		Assert::true($this->map->getIsClicable());
+		Assert::same('<a href="https://maps.google.com/maps/place/50.250718,14.583435/">',
+			$this->map->getIsClicable());
 
 		$this->map->isClickable(TRUE);
-		Assert::true($this->map->getIsClicable());
+		Assert::same('<a href="https://maps.google.com/maps/place/50.250718,14.583435/">',
+			$this->map->getIsClicable());
+
+
+		$function = function ($url) {
+			return Html::el('a', ['class' => 'btn btn-default'])->href($url);
+		};
+		$this->map->isClickable($function);
+		Assert::same($function, $this->map->getIsClicable());
 
 		Assert::exception(function () {
 			$this->map->isClickable('foo');
-		}, InvalidArgumentException::class, 'clickable must be boolean, foo (string) was given');
+		}, InvalidArgumentException::class, 'clickable must be boolean or callable, foo (string) was given');
 	}
 
 

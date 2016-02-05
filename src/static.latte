@@ -1,4 +1,4 @@
-{if $clickable}<a href="https://maps.google.com/maps/place/{$position[0]},{$position[1]}/">{/if}
+{if !is_null($clickable)}{$clickable|noescape}{/if}
 <img src="https://maps.google.com/maps/api/staticmap?center={$position[0]},{$position[1]}&zoom={$zoom}&size={(int) $width}x{(int) $height}&maptype=roadmap&language=
      {if $markers}{foreach $markers as $marker}&markers=color:{if array_key_exists('color', $marker)}{$marker['color']}{else}red{/if}|label:true|{$marker['position'][0]},{$marker['position'][1]}{/foreach}{/if}" title="" width="{$width}" height="{$height}">
-{if $clickable}</a>{/if}
+{if !is_null($clickable)}</a>{/if}
