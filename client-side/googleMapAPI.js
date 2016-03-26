@@ -20,24 +20,25 @@ GoogleMap = function(element)
 	this.markersCluster = new Array();
 	this.URL = "";
 	this.allowColors = new Array('green', 'purple', 'yellow', 'blue', 'orange', 'red');
-	
+	this.markerEvents;
+
 	this.init();
 };
 
 GoogleMap.prototype = {
-	
+
 	constructor: GoogleMap,
-	
+
 	init: function()
 	{
 		this.setProperties();
 		return this;
 	},
-	
+
 	setProperties: function()
 	{
 		var properties = JSON.parse(this.element.dataset.map);
-		
+
 		this.options.position = properties.position;
 		this.options.proportions = [properties.width, properties.height];
 		this.options.zoom = properties.zoom;
@@ -50,16 +51,16 @@ GoogleMap.prototype = {
 		this.options.waypoints = properties.waypoint;
 		this.basePath = this.element.dataset.basepath;
 		this.URL = this.element.dataset.markersfallback;
-		
+
 		return this;
 	},
-	
+
 	initialize: function()
 	{
 		var base = this;
-		
+
 		base.doBounds('init');
-		
+
 		var mapOptions = {
 			center: new google.maps.LatLng(base.options.position[0], base.options.position[1]),
 			zoom: base.options.zoom,
@@ -71,18 +72,18 @@ GoogleMap.prototype = {
 		base.map = new google.maps.Map(base.element, mapOptions);
 		base.map.setTilt(45);
 		base.loadMarkers();
-		
+
 		if (base.options.waypoints !== null)
 		{
 			base.drawDirections();
 		}
 	},
-	
+
 	loadMarkers: function()
 	{
 		var base = this;
 		this.clearMarkers();
-		
+
 		var request = new XMLHttpRequest();
 		request.open('GET', base.URL, true);
 
@@ -105,12 +106,12 @@ GoogleMap.prototype = {
 
 		request.send();
 	},
-	
+
 	drawDirections: function ()
 	{
 		var base = this;
 		if (base.options.waypoints.start === undefined ||
-		  base.options.waypoints.end === undefined) {
+			base.options.waypoints.end === undefined) {
 			console.log('You must define start and end point of the way!');
 		}
 		var start = base.options.waypoints.start;
@@ -120,10 +121,10 @@ GoogleMap.prototype = {
 		if (base.options.waypoints.waypoints !== undefined) {
 			for (var i = 0; i < base.options.waypoints.waypoints.length; i++) {
 				waypoints.push({
-				location: new google.maps.LatLng(
-				  base.options.waypoints.waypoints[i].position[0],
-				  base.options.waypoints.waypoints[i].position[1]),
-				stopover:true});
+					location: new google.maps.LatLng(
+						base.options.waypoints.waypoints[i].position[0],
+						base.options.waypoints.waypoints[i].position[1]),
+					stopover:true});
 			}
 		}
 
@@ -142,13 +143,13 @@ GoogleMap.prototype = {
 			var obj3 = {};
 			for (var attrname in obj1) {
 				if (attrname !== 'start' && attrname !== 'end' &&
-				  attrname !== 'travelmode') {
+					attrname !== 'travelmode') {
 					obj3[attrname] = obj1[attrname];
 				}
 			}
 			for (var attrname in obj2) {
 				if (attrname !== 'start' && attrname !== 'end' &&
-				  attrname !== 'travelmode' && attrname !== 'waypoints') {
+					attrname !== 'travelmode' && attrname !== 'waypoints') {
 					obj3[attrname] = obj2[attrname];
 				}
 			}
@@ -163,50 +164,54 @@ GoogleMap.prototype = {
 			}
 		});
 	},
-	
+
 	insertMarkers: function(markers)
 	{
 		var base = this;
-		
+
 		markers.forEach(function(item, i){
 			var marker,
-			position = new google.maps.LatLng(markers[i]['position'][0], markers[i]['position'][1]);
+				position = new google.maps.LatLng(markers[i]['position'][0], markers[i]['position'][1]);
 			base.doBounds('fill', position);
-			
+
 			marker = new google.maps.Marker({
 				position: position,
 				map: base.map,
 				title: (("title" in markers[i]) ? markers[i]['title'] : null)
 			});
-			
+
 			marker.setAnimation(base.doAdmination(item));
-			
+
 			base.doColor(item, marker);
-			
+
 			base.doIcon(item, marker);
-			
+
 			base.doMessage(item, marker);
-			
+
 			if (base.options.cluster)
 			{
 				base.markersCluster.push(marker);
 			}
+
+			if (typeof base.markerEvents !== "undefined") {
+				base.markerEvents.call(base, marker);
+			}
 		});
-		
+
 		base.doBounds('fit');
-		
-		
+
+
 		if (base.options.cluster)
 		{
 			if (typeof MarkerClusterer != 'undefined') {
 				new MarkerClusterer(base.map, base.markersCluster, base.options.clusterOptions);
-			} else 
+			} else
 			{
 				throw 'MarkerClusterer is not loaded! Please use markerclusterer.js from client-side folder';
 			}
 		}
 	},
-	
+
 	clearMarkers: function()
 	{
 		var base = this;
@@ -215,7 +220,7 @@ GoogleMap.prototype = {
 		}
 		base.markers.length = 0;
 	},
-	
+
 	doBounds: function(functionName, position)
 	{
 		var base = this;
@@ -238,7 +243,7 @@ GoogleMap.prototype = {
 			fn[functionName]();
 		}
 	},
-	
+
 	doAdmination: function(marker)
 	{
 		var animation;
@@ -246,15 +251,15 @@ GoogleMap.prototype = {
 		{
 			animation = google.maps.Animation[marker.animation];
 		}
-		
+
 		return animation;
 	},
-	
+
 	doMessage: function(option, marker)
 	{
 		var base = this;
 		var infoWindow = new google.maps.InfoWindow();
-		// Allow each marker to have an info window    
+		// Allow each marker to have an info window
 		if (("message" in option))
 		{
 			google.maps.event.addListener(marker, 'click', function() {
@@ -269,23 +274,23 @@ GoogleMap.prototype = {
 			}
 		}
 	},
-	
+
 	doProportions: function()
 	{
 		this.element.style.width = this.options.proportions[0];
 		this.element.style.height = this.options.proportions[1];
 	},
-	
+
 	doColor: function(option, marker)
 	{
 		var base = this;
-		
+
 		if ("color" in option && base.allowColors.indexOf(option['color']) >= 0)
 		{
 			marker.setIcon('http://maps.google.com/mapfiles/ms/icons/'+option['color']+'-dot.png');
 		}
 	},
-	
+
 	doIcon: function(option, marker)
 	{
 		if ("icon" in option)
@@ -295,51 +300,40 @@ GoogleMap.prototype = {
 				var icon = {
 					url: host+this.basePath + '/' + option['icon']['url']
 				};
-				
+
 				if (option['icon']['size'] !== null) {
 					icon['size'] = new google.maps.Size(option['icon']['size'][0], option['icon']['size'][1]);
 				}
-				
+
 				if (option['icon']['anchor'] !== null) {
 					icon['size'] = new new google.maps.Point(option['icon']['anchor'][0], option['icon']['anchor'][1]);
 				}
-				
+
 				if (option['icon']['origin'] !== null) {
 					icon['size'] = new new google.maps.Point(option['icon']['orign'][0], option['icon']['origin'][1]);
 				}
-				
+
 			} else {
 				var icon = {
 					url: host+this.basePath + '/' + option['icon']
 				};
 			}
-			
+
 			marker.setIcon(icon);
 		}
 	},
-	
+
 	getKey: function()
 	{
 		return this.options.key;
 	}
 };
 
-var map;
-Array.prototype.forEach.call(document.getElementsByClassName('googleMapAPI'), function(el, i){
-	map = new GoogleMap(el);
-	map.doProportions();
-	if (typeof google === "undefined") {
-            loadScript();
-        } else {
-            map.initialize();
-        }
-});
-
 function loadScript() {
 	var script = document.createElement('script');
 	script.type = 'text/javascript';
 	var key = (map.getKey() !== null ? "&key="+map.getKey() : '');
 	script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&' +
-	'callback=map.initialize'+key;
+		'callback=map.initialize'+key;
 	document.body.appendChild(script);
 }
