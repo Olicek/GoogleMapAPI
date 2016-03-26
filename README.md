@@ -22,6 +22,11 @@ extensions:
     map: Oli\GoogleAPI\MapApiExtension
 ```
     	
-The last step is to link `client-side/googleMapAPI.js` to your page.
+The last step is to link 2 files to your page.
+
+```
+client-side/googleMapAPI.js
+client-side/googleMapApiLoader.js
+```
 
 [Documentation](https://github.com/Olicek/GoogleMapAPI/blob/master/docs/en)
