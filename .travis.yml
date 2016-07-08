@@ -10,9 +10,17 @@ php:
   - 5.5
   - 5.6
   - 7.0
+  
+env:
+  matrix:
+    - NETTE=nette-2.4
+    - NETTE=nette-2.3
 
 before_install:
-    - if [ $TRAVIS_PHP_VERSION = '5.6' ]; then COVERAGE="-c `php -i | grep 'xdebug.ini'` --coverage coverage.xml --coverage-src src/"; else COVERAGE="" && if [ $TRAVIS_PHP_VERSION = '5.6' ]; then phpenv config-rm xdebug.ini; fi; fi
+  - travis_retry composer self-update
+  - wget -O /tmp/composer-nette https://raw.githubusercontent.com/Kdyby/TesterExtras/master/bin/composer-nette.php
+  - php /tmp/composer-nette
+  - if [ $TRAVIS_PHP_VERSION = '5.6' ]; then COVERAGE="-c `php -i | grep 'xdebug.ini'` --coverage coverage.xml --coverage-src src/"; else COVERAGE="" && if [ $TRAVIS_PHP_VERSION = '5.6' ]; then phpenv config-rm xdebug.ini; fi; fi
 
 install:
   - composer install --no-interaction --prefer-source
