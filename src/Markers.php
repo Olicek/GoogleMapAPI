@@ -8,7 +8,7 @@
 
 namespace Oli\GoogleAPI;
 
-use Nette\Object;
+use Nette\SmartObject;
 use Nette\Utils\Strings;
 use Oli\GoogleAPI\Marker\Icon;
 
@@ -18,9 +18,10 @@ use Oli\GoogleAPI\Marker\Icon;
  * @package Oli\GoogleAPI
  * @see https://developers.google.com/maps/documentation/javascript/markers#complex_icons
  */
-class Markers extends Object
+class Markers
 {
 
+	use SmartObject;
 	const DROP = 'DROP', BOUNCE = 'BOUNCE';
 
 	/**
