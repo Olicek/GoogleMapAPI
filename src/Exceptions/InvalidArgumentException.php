@@ -6,7 +6,7 @@
  * Time: 20:14
  */
 
-namespace Oli\GoogleAPI;
+namespace Oli\GoogleAPI\Exceptions;
 
 
 class InvalidArgumentException extends \InvalidArgumentException

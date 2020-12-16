@@ -15,45 +15,44 @@ namespace Oli\GoogleAPI\Marker;
  *
  * @author petr
  */
-class Icon extends \Nette\Object
+class Icon
 {
 
 	/**
 	 * @var string
 	 */
-	private $url;
+	private string $url;
 
 	/**
 	 * @var array|null
 	 */
-	private $anchor;
+	private ?array $anchor = null;
 
 	/**
 	 * @var array|null
 	 */
-	private $size;
+	private ?array $size = null;
 
 	/**
 	 * @var array|null
 	 */
-	private $origin;
+	private ?array $origin = null;
 
 
 	/**
 	 * Icon constructor.
 	 * @param string $url
 	 */
-	public function __construct($url)
+	public function __construct(string $url)
 	{
 		$this->url = $url;
 	}
 
-
-	/**
-	 * @return null
-	 */
-	public function getUrl()
-	{
+  /**
+   * @return string
+   */
+	public function getUrl(): string
+  {
 		return $this->url;
 	}
 
@@ -61,8 +60,8 @@ class Icon extends \Nette\Object
 	/**
 	 * @return array|null
 	 */
-	public function getAnchor()
-	{
+	public function getAnchor(): ?array
+  {
 		return $this->anchor;
 	}
 
@@ -70,8 +69,8 @@ class Icon extends \Nette\Object
 	/**
 	 * @return array|null
 	 */
-	public function getSize()
-	{
+	public function getSize(): ?array
+  {
 		return $this->size;
 	}
 
@@ -79,8 +78,8 @@ class Icon extends \Nette\Object
 	/**
 	 * @return array|null
 	 */
-	public function getOrigin()
-	{
+	public function getOrigin(): ?array
+  {
 		return $this->origin;
 	}
 
@@ -89,8 +88,8 @@ class Icon extends \Nette\Object
 	 * @param string $url
 	 * @return $this
 	 */
-	public function setUrl($url)
-	{
+	public function setUrl(string $url): Icon
+  {
 		$this->url = $url;
 		return $this;
 	}
@@ -100,8 +99,8 @@ class Icon extends \Nette\Object
 	 * @param array $anchor
 	 * @return $this
 	 */
-	public function setAnchor(array $anchor)
-	{
+	public function setAnchor(array $anchor): Icon
+  {
 		$this->anchor = $anchor;
 		return $this;
 	}
@@ -111,8 +110,8 @@ class Icon extends \Nette\Object
 	 * @param array $size
 	 * @return $this
 	 */
-	public function setSize(array $size)
-	{
+	public function setSize(array $size): Icon
+  {
 		$this->size = $size;
 		return $this;
 	}
@@ -122,8 +121,8 @@ class Icon extends \Nette\Object
 	 * @param array $origin
 	 * @return $this
 	 */
-	public function setOrigin(array $origin)
-	{
+	public function setOrigin(array $origin): Icon
+  {
 		$this->origin = $origin;
 		return $this;
 	}
@@ -132,8 +131,8 @@ class Icon extends \Nette\Object
 	/**
 	 * @return array
 	 */
-	public function getArray()
-	{
+	public function getArray(): array
+  {
 		return [
 			'url' => $this->getUrl(),
 			'size' => $this->getSize(),
@@ -141,5 +140,5 @@ class Icon extends \Nette\Object
 			'anchor' => $this->getAnchor()
 		];
 	}
-	
+
 }

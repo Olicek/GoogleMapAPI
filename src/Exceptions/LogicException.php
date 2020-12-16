@@ -6,7 +6,7 @@
  * Time: 20:22
  */
 
-namespace Oli\GoogleAPI;
+namespace Oli\GoogleAPI\Exceptions;
 
 
 class LogicException extends \LogicException

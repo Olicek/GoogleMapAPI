@@ -15,6 +15,7 @@ namespace Oli\GoogleAPI;
  */
 interface IMarkers
 {
-	/** @return Markers */
-	function create();
+
+	public function create(): Markers;
+
 }

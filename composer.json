@@ -13,12 +13,14 @@
 		}
 	],
 	"require": {
-		"php": ">=5.4.0",
-		"nette/utils": "^2.5.0"
+		"php": ">=7.4",
+		"nette/di": "~v3.0.0",
+		"nette/utils": "^3.2",
+		"nette/application": "^3.0",
+		"nette/schema": "^v1.0.3"
 	},
 	"require-dev": {
-		"nette/nette": ">=2.1",
-		"nette/tester": "~1.6",
+		"phpstan/phpstan": "~0.12.59",
 		"squizlabs/php_codesniffer": "2.*"
 	},
 	"autoload": {

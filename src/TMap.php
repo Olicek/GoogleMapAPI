@@ -20,40 +20,39 @@ trait TMap
 	/**
 	 * @var IMapAPI
 	 */
-	protected $googleMapAPI;
+	protected IMapAPI $googleMapAPI;
 
 	/**
 	 * @var IMarkers
 	 */
-	protected $googleMapMarkers;
+	protected IMarkers $googleMapMarkers;
 
 
 	/**
 	 * @param \Oli\GoogleAPI\IMapAPI $mapApi
 	 */
-	public function injectGoogleMapApi(IMapAPI $mapApi)
-	{
+	public function injectGoogleMapApi(IMapAPI $mapApi): void
+  {
 		$this->googleMapAPI = $mapApi;
 	}
-	
-	
+
+
 	/**
 	 * @param \Oli\GoogleAPI\IMarkers $markers
 	 */
-	public function injectGoogleMapMarkers(IMarkers $markers)
-	{
+	public function injectGoogleMapMarkers(IMarkers $markers): void
+  {
 		$this->googleMapMarkers = $markers;
 	}
-	
-	
-	/**
-	 * @return MapAPI
-	 */
-	public function createComponentMap()
-	{
+
+  /**
+   * @return \Oli\GoogleAPI\MapAPI
+   */
+	public function createComponentMap(): MapAPI
+  {
 		$map = $this->googleMapAPI->create();
 		$map->addMarkers($this->googleMapMarkers->create());
 		return $map;
 	}
-	
+
 }

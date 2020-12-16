@@ -15,6 +15,7 @@ namespace Oli\GoogleAPI;
  */
 interface IMapAPI
 {
-	/** @return \Oli\GoogleAPI\MapAPI */
-	function create();
+
+	public function create(): MapAPI;
+
 }
